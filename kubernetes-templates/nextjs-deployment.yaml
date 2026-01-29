@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nextjs-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: nextjs
+    template:
+        metadata:
+            labels:
+                app: nextjs
+        spec:
+            securityContext:
+                runAsUser: 1000
+                runAsNonRoot: true
+                seccompProfile:
+                    type: RuntimeDefault
+            containers:
+                - name: nextjs
+                  image: <your-frontend-image> # change this to your Next.js image
+                  command:
+                      - "/bin/sh"
+                      - "-c"
+                      - "cd /app && npm run build && npm start"
+                  imagePullPolicy: Always
+                  resources:
+                      requests:
+                          cpu: 6
+                          memory: 4Gi
+                      limits:
+                          cpu: 8
+                          memory: 8Gi
+                  securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                          drop:
+                              - ALL
+                  ports:
+                      - containerPort: 3000
+                  env:
+                      - name: NODE_ENV
+                        value: "production"
+                      - name: NEXT_PUBLIC_API_URL
+                        value: http://flask-service:8080
+                      - name: SESSION_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: session-secret
+                                key: SESSION_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: nextjs-service
+spec:
+    type: ClusterIP
+    ports:
+        - protocol: TCP
+          name: foldify-client-port
+          port: 3000
+          targetPort: 3000
+    selector:
+        app: nextjs

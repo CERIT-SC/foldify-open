@@ -1,0 +1,143 @@
+@import 'tailwindcss';
+@import "tailwindcss";
+
+@plugin "daisyui" {
+    themes: einfra --default;
+}
+
+
+@plugin "daisyui/theme" {
+    name: "einfra";
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(100% 0 0);
+    --color-base-200: oklch(97% 0 0);
+    --color-base-300: oklch(92% 0 0);
+    --color-base-content: oklch(21% 0.034 264.665);
+    --color-primary: #2f2557;
+    --color-primary-content: oklch(98% 0.014 180.72);
+    --color-secondary: #dac8fe;
+    --color-secondary-content: oklch(98% 0.003 247.858);
+    --color-accent: #4cd9f4;
+    --color-accent-content: oklch(100% 0 0);
+    --color-neutral: #2f2557;
+    --color-neutral-content: oklch(98% 0.002 247.839);
+    --color-info: oklch(55% 0.288 302.321);
+    --color-info-content: oklch(97% 0.013 236.62);
+    --color-success: oklch(52% 0.154 150.069);
+    --color-success-content: oklch(96% 0.044 156.743);
+    --color-warning: oklch(64% 0.222 41.116);
+    --color-warning-content: oklch(98% 0.016 73.684);
+    --color-error: oklch(63% 0.237 25.331);
+    --color-error-content: oklch(97% 0.013 17.38);
+    --radius-selector: 2rem;
+    --radius-field: 2rem;
+    --radius-box: 2rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+
+
+@source '../node_modules/react-tailwindcss-datepicker/dist/index.esm.js';
+
+@theme {
+    --color-einfra-purple: #2f2557;
+    --color-einfra-cyan: #4cd9f4;
+    --color-einfra-grey: #a1a1b7;
+    --color-einfra-violet: #dac8fe;
+    --color-plddt-orange: #f59e0b;
+    --color-plddt-yellow: #ebeb00;
+    --color-plddt-cyan: #00f8f8;
+    --color-plddt-blue: #0000f9;
+
+    --background-image-einfra-bg: url('/einfra_bg.png');
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
+
+@utility text-balance {
+    text-wrap: balance;
+}
+
+@utility btn {
+    @apply rounded-full;
+}
+
+@layer utilities {
+    :root {
+        --foreground-rgb: 0, 0, 0;
+        --background-start-rgb: 214, 219, 220;
+        --background-end-rgb: 255, 255, 255;
+    }
+
+    html, body {
+        background-image: url('../public/einfra_bg.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* Ensure main containers don't override the background */
+    main {
+        background: transparent;
+    }
+}
+
+/* Override DaisyUI image-full shadow with higher specificity */
+.card.image-full::before {
+    background: rgba(0, 0, 0, 0.15) !important; /* Light overlay - adjust the 0.15 value */
+}
+
+/* Custom card with background image and light overlay */
+.card-bg-image {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card-bg-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background: rgb(0, 0, 0, 0.3); Light overlay - adjust this value */
+    background-color: oklch(65.225% 0.06885 307.252 / 0.848);
+    opacity: .75;
+    border-radius: inherit;
+    z-index: 1;
+}
+
+.card-bg-image .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+.card-bg-image .card-title,
+.card-bg-image .badge,
+.card-bg-image .btn {
+    position: relative;
+    z-index: 2;
+}

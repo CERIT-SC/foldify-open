@@ -1,0 +1,10 @@
+{
+    "email": "duraciovar@gmail.com",
+    "forceComputation": false,
+    "jobName": "foldify-icy-hatchback",
+    "makeResultsPublic": false,
+    "numCycle": "4",
+    "numPseudoMSAs": "1",
+    "proteinSequence": ">Sequence\nPLMTYELHGDFIVPAK",
+    "pseudoMSAMask": "0.2"
+}

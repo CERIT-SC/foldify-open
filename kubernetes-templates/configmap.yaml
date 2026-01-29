@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: foldify-config
+data:
+    # Container Images (full image paths)
+    ESMFOLD_IMAGE: "registry/username/image:tag" # change this to your actual image path
+    ALPHAFOLD_IMAGE_V0: "registry/username/image:tag" # change this to your actual image path
+    ALPHAFOLD_IMAGE_V2: "registry/username/image:tag" # change this to your actual image path
+    ALPHAFOLD3_IMAGE: "registry/username/image:tag" # change this to your actual image path
+    OMEGAFOLD_IMAGE: "registry/username/image:tag" # change this to your actual image path
+    COLABFOLD_IMAGE: "registry/username/image:tag" # change this to your actual image path
+
+    # Application URL
+    BASE_URL: "" # change this to your actual application URL
+
+    # Kubernetes PVC Names
+    PVC_VOL1_ALPHAFOLD: "pvc-vol1" # change this to your actual PVC name for alphafold etc.
+    PVC_VOL1_ALPHAFOLD3: "pvc-vol1-af3" # change this to your actual PVC name for alphafold3
+    PVC_VOL2: "pvc-vol2" # change this to your actual PVC name
+    PVC_STORAGE: "pvc-storage" # change this to your actual PVC name
+    PVC_TMP: "pvc-tmp" # change this to your actual PVC name
+
+    # Namespace
+    NAMESPACE: "namespace-name" # change this to your actual namespace
+
+    # Results Directory
+    PROD_RESULTS_DIRECTORY: "/path/to/results" # change this to your actual results directory path

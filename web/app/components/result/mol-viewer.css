@@ -1,0 +1,61 @@
+/* MSWrapper component styles */
+.molstar-wrapper {
+    background-color: white !important;
+}
+
+.molstar-wrapper .msp-plugin .msp-layout-standard {
+    border: none;
+}
+
+.molstar-wrapper .msp-snapshot-description-wrapper {
+    display: none !important; /* Hide snapshot description */
+}
+
+/* Force white background on Mol* canvas and all related elements */
+.molstar-wrapper canvas,
+.molstar-wrapper .msp-canvas3d-wrapper canvas {
+    background-color: white !important;
+}
+
+.molstar-wrapper .msp-viewport,
+.molstar-wrapper .msp-canvas3d-wrapper {
+    background-color: white !important;
+}
+
+.molstar-wrapper .msp-plugin,
+.molstar-wrapper .msp-plugin .msp-layout {
+    background-color: white !important;
+}
+
+/* Ensure consistent white background during loading */
+.molstar-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: -1;
+}
+
+.molstar-no-ui .msp-viewport-top-left-controls {
+    display: none !important;
+}
+
+/* Hide MolStar UI elements when showUI is false */
+.molstar-no-ui .msp-left-panel,
+.molstar-no-ui .msp-right-panel,
+.molstar-no-ui .msp-layout-controls,
+.molstar-no-ui .msp-viewport-controls,
+.molstar-no-ui .msp-sequence-viewer {
+    display: none !important;
+}
+
+.molstar-no-ui .msp-viewport {
+    /* Ensure viewport takes full space when UI is hidden */
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+}

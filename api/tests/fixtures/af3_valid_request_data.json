@@ -1,0 +1,15 @@
+{
+    "jobName": "test-comp-af3",
+    "modelSeeds": "1,2",
+    "sequences": [
+        {
+            "copies": "R",
+            "input": "SEQUENCE",
+            "type": "protein"
+        }
+    ],
+    "public": true,
+    "email": "duraciovar@gmail.com",
+    "largeInput": false,
+    "forceComputation": false
+}

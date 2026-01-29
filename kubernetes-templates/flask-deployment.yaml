@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: flask-deployment
+    namespace: <your-name-space> # change this to your namespace
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: flask
+    template:
+        metadata:
+            labels:
+                app: flask
+        spec:
+            serviceAccountName: foldify-service-account
+            securityContext:
+                runAsUser: 1000
+                runAsNonRoot: true
+                seccompProfile:
+                    type: RuntimeDefault
+            containers:
+                - name: flask
+                  image: <your-image> # change <your-image> to your backend application image
+                  imagePullPolicy: Always
+                  resources:
+                      requests:
+                          cpu: 100m
+                          memory: 512Mi
+                      limits:
+                          cpu: 2
+                          memory: 16Gi
+                  securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                          drop:
+                              - ALL
+                  ports:
+                      - containerPort: 8080
+                  env:
+                      - name: FLASK_ENV
+                        value: production
+                      - name: SESSION_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: foldify-secrets
+                                key: SESSION_SECRET
+                      - name: EMAIL_FROM
+                        valueFrom:
+                            secretKeyRef:
+                                name: foldify-secrets
+                                key: EMAIL_FROM
+                      - name: NAMESPACE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: NAMESPACE
+                      - name: PROD_RESULTS_DIRECTORY
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: PROD_RESULTS_DIRECTORY
+                      - name: BASE_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: BASE_URL
+                      - name: ESMFOLD_IMAGE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: ESMFOLD_IMAGE
+                      - name: ALPHAFOLD_IMAGE_V0
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: ALPHAFOLD_IMAGE_V0
+                      - name: ALPHAFOLD_IMAGE_V2
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: ALPHAFOLD_IMAGE_V2
+                      - name: ALPHAFOLD3_IMAGE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: ALPHAFOLD3_IMAGE
+                      - name: OMEGAFOLD_IMAGE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: OMEGAFOLD_IMAGE
+                      - name: COLABFOLD_IMAGE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: COLABFOLD_IMAGE
+                      - name: PVC_VOL1_ALPHAFOLD
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: PVC_VOL1_ALPHAFOLD
+                      - name: PVC_VOL1_ALPHAFOLD3
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: PVC_VOL1_ALPHAFOLD3
+                      - name: PVC_VOL2
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: PVC_VOL2
+                      - name: PVC_STORAGE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: PVC_STORAGE
+                      - name: PVC_TMP
+                        valueFrom:
+                            configMapKeyRef:
+                                name: foldify-config
+                                key: PVC_TMP
+                  volumeMounts:
+                      - name: <volume> # change <volume> to your desired volume name
+                        mountPath: "/path/to/results" # change this to your actual mount path
+            volumes:
+                - name: <volume> # change <volume> to your desired volume name
+                  persistentVolumeClaim:
+                      claimName: <pvc-name> # change <pvc-name> to your actual PVC name
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: flask-service
+spec:
+    type: ClusterIP
+    ports:
+        - protocol: TCP
+          name: flask-service-port
+          port: 8080
+          targetPort: 8080
+    selector:
+        app: flask

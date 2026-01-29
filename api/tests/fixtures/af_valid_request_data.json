@@ -1,0 +1,15 @@
+{
+    "user": "mock_user",
+    "jobName": "test-job",
+    "maxTemplateDate": "2022-01-01",
+    "dbPreset": "full_dbs",
+    "modelPreset": "multimer",
+    "reuseMSAs": false,
+    "predictionsPerModel": "5",
+    "runRelax": true,
+    "makeResultsPublic": true,
+    "forceComputation": false,
+    "proteinSequence": ">SEQ1\nSEQUENCE",
+    "email": "example@mail.com",
+    "version": "Alphafold 2.2.0"
+}

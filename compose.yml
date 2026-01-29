@@ -1,0 +1,17 @@
+services:
+    flask:
+        build: ./api
+        ports:
+            - "8080:8080"
+        environment:
+            - FLASK_ENV=development
+            - KUBECONFIG=/app/config
+        volumes:
+            - ~/.kube/config:/app/config
+
+    nextjs:
+        build: ./web
+        ports:
+            - "3000:3000"
+        depends_on:
+            - flask

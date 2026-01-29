@@ -1,0 +1,19 @@
+{
+    "email": "duraciovar@gmail.com",
+    "forceComputation": false,
+    "jobName": "shy-clapper",
+    "makeResultsPublic": false,
+    "maxMSA": "auto",
+    "modelPreset": "alphafold2_ptm",
+    "msaMode": "mmseqs2_uniref_env",
+    "numModels": "5",
+    "numRecycles": "3",
+    "numRelax": "0",
+    "numSeeds": "1",
+    "pairMode": "unpaired_paired",
+    "proteinSequence": ">Sequence1\nQYLRSLPEPLMTYELHGDFIVPAKSGSPESRVNAIHFLVHKLPEKNKEMLDILVKHLTNV",
+    "recycleTolerance": "auto",
+    "templateMode": "none",
+    "useDropout": false,
+    "version": "Colabfold 1.5.2"
+}

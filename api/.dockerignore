@@ -1,0 +1,12 @@
+Dockerfile
+docker-compose.yml
+
+.gitignore
+venv
+__pycache__
+input
+output
+molstar
+
+# test files
+tests
