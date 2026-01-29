@@ -2,9 +2,9 @@
 
 ![image](/web/public/foldify-logo.png)
 
-This web application is designed to provide a user-friendly interface for protein structure prediction using AI tools. It allows users to upload protein sequences, run predictions, visualize the results in web and download the results locally. The application is built using Next.js for the frontend and Flask for the backend, with Docker for containerization and deployment.
+This web application is designed to provide a user-friendly interface for protein structure prediction using AI tools. It allows users to upload protein sequences, run predictions, visualize the results in web and download the results locally. The application is built using Next.js for the frontend and Flask for the backend, with Docker for containerization and deployment in Kubernetes.
 
-For development purposes (the submission of jobs will not work), the application can be run via [Docker Compose](#running-the-application-via-docker-compose) or manually on a [local machine](#running-the-application-locally). For production use (with working prediction submission), the application can be [deployed in a Kubernetes](#running-the-application-in-kubernetes) cluster with prepared Docker images for every prediction tool. In all three cases, the application needs to be [configured with an authentication service](#authentication-credentials-setup) for user authentication.
+For development purposes (the submission of jobs will not work), the application can be run via [Docker Compose](#running-the-application-via-docker-compose) or manually on a [local machine](#running-the-application-locally). For production use (with working prediction submission), the application can be [deployed in a Kubernetes](#running-the-application-in-kubernetes) cluster with prepared Docker images for every prediction tool. The app uses session management to allow anonymous guest access.
 
 ## Prerequisites
 
