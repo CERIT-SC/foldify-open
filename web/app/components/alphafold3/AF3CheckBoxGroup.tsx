@@ -5,10 +5,7 @@ interface CheckBoxGroupProps {
     onMakeResultsPublicChange: (value: boolean) => void;
 }
 
-export const CheckBoxGroup = ({
-                                  forceComputation,
-                                  onForceComputationChange,
-                              }: CheckBoxGroupProps) => {
+export const CheckBoxGroup = ({ forceComputation, onForceComputationChange, makeResultsPublic, onMakeResultsPublicChange }: CheckBoxGroupProps) => {
     const checkboxOptions = [
         {
             id: "forceComputation",
@@ -16,6 +13,13 @@ export const CheckBoxGroup = ({
             description: "Force re-computation even if results exist",
             checked: forceComputation,
             onChange: onForceComputationChange,
+        },
+        {
+            id: "makeResultsPublic",
+            label: "Make Results Public",
+            description: "Allow others to view your results",
+            checked: makeResultsPublic,
+            onChange: onMakeResultsPublicChange,
         },
     ];
 

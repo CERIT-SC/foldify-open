@@ -21,7 +21,7 @@ export default function ESMfold() {
     const [proteinSequence, setProteinSequence] = useState("");
     const [numRecycles, setNumRecycles] = useState("3");
     const [numCopies, setNumCopies] = useState("1");
-    const [makeResultsPublic, setMakeResultsPublic] = useState(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState(true);
     const [forceComputation, setForceComputation] = useState(false);
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState("");

@@ -36,7 +36,7 @@ export default function Colabfold() {
     const [numSeeds, setNumSeeds] = useState("1");
     const [version, setVersion] = useState("Colabfold 1.5.2");
     const [forceComputation, setForceComputation] = useState(false);
-    const [makeResultsPublic, setMakeResultsPublic] = useState(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState(true);
     const [useDropout, setUseDropout] = useState(false);
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState("");

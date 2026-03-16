@@ -20,7 +20,7 @@ export default function MultiFold() {
     const [email, setEmail] = useState<string>("");
     const [sequence, setSequence] = useState<string>("MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGG");
     const [forceComputation, setForceComputation] = useState<boolean>(false);
-    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(true);
     const [selectedTools, setSelectedTools] = useState<string[]>([]);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);

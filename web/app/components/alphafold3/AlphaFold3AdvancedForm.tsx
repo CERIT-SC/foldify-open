@@ -37,7 +37,7 @@ export default function AlphaFold3AdvancedForm() {
     const [jobName, setJobName] = useState(generateSlug(2));
     const [email, setEmail] = useState<string>("");
     const [modelSeeds, setModelSeeds] = useState<string>("1");
-    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(true);
     const [forceComputation, setForceComputation] = useState<boolean>(false);
     const [largeInput, setLargeInput] = useState<boolean>(false);
     const [precomputedMSA, setPrecomputedMSA] = useState<boolean>(true);

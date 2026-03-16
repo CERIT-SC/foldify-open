@@ -14,7 +14,7 @@ import EmailInput from "@/app/components/EmailInput";
 export const AlphaFold3JsonForm = () => {
     const [jobName, setJobName] = useState<string>(generateSlug(2));
     const [email, setEmail] = useState<string>("");
-    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(true);
     const [forceComputation, setForceComputation] = useState<boolean>(false);
     const [largeInput, setLargeInput] = useState<boolean>(false);
     const [jsonFile, setJsonFile] = useState<File | null>(null);

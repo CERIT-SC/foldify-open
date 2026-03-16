@@ -22,7 +22,7 @@ export default function Omegafold() {
     const [numCycle, setNumCycle] = useState<string>("4");
     const [numPseudoMSAs, setNumPseudoMSAs] = useState<string>("1");
     const [pseudoMSAMask, setPseudoMSAMask] = useState("0.2");
-    const [makeResultsPublic, setMakeResultsPublic] = useState(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState(true);
     const [forceComputation, setForceComputation] = useState(false);
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState("");

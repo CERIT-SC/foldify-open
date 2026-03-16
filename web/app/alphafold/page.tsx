@@ -30,7 +30,7 @@ export default function Alphafold() {
     const [forceComputation, setForceComputation] = useState<boolean>(false);
     const [runRelax, setRunRelax] = useState<boolean>(true);
     const [reuseMSAs, setReuseMSAs] = useState<boolean>(false);
-    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(false);
+    const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(true);
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState<string>("");
     const [submitSuccessMessage, setSubmitSuccessMessage] = useState<string>("");
