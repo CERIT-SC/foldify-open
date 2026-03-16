@@ -28,42 +28,23 @@ export default function Dashboard() {
         loadJobTable();
     }, []);
 
-    const [listPublicJobs, setListPublicJobs] = useState<boolean>(false);
     const [jobs, setJobs] = useState<Job[]>([]);
 
     const loadJobTable = () => {
         setLoadingTable(true);
 
-        if (listPublicJobs) {
-            axios
-                .get(`/api/flask/dashboard/public_jobs`)
-                .then((response) => response.data)
-                .then((data) => {
-                    setJobs(data.jobs);
-                    setLoadingTable(false);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    setLoadingTable(false);
-                });
-        } else {
-            axios
-                .get(`/api/flask/dashboard/user_jobs`)
-                .then((response) => response.data)
-                .then((data) => {
-                    setJobs(data.jobs);
-                    setLoadingTable(false);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    setLoadingTable(false);
-                });
-        }
+        axios
+            .get(`/api/flask/dashboard/user_jobs`)
+            .then((response) => response.data)
+            .then((data) => {
+                setJobs(data.jobs);
+                setLoadingTable(false);
+            })
+            .catch(function (error) {
+                console.log(error);
+                setLoadingTable(false);
+            });
     };
-
-    useEffect(() => {
-        loadJobTable();
-    }, [listPublicJobs]);
 
     // -------------------------- DOWNLOAD -------------------------------
     const { downloadErrorMessage, checkDownloadAvailability, downloadAvailable, setDownloadAvailable } = useJobDownload();
@@ -269,8 +250,6 @@ export default function Dashboard() {
                     downloadJob={downloadJob}
                     openDeleteJobModal={openDeleteJobModal}
                     openMultiDeleteModal={openMultiDeleteModal}
-                    listPublicJobs={listPublicJobs}
-                    setListPublicJobs={setListPublicJobs}
                     switchPublicity={switchPublicity}
                 />
 

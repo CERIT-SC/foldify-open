@@ -21,8 +21,6 @@ interface ComputedJobsTableProps {
     downloadJob: (jobName: string) => void;
     openDeleteJobModal: (jobName: string) => void;
     openMultiDeleteModal: (selectedJobs: string[], runningJobsError: boolean) => void;
-    listPublicJobs: boolean;
-    setListPublicJobs: (value: boolean) => void;
     switchPublicity: (jobName: string) => void;
 }
 
@@ -33,8 +31,6 @@ export default function ComputedJobsTable({
     downloadJob,
     openDeleteJobModal,
     openMultiDeleteModal,
-    listPublicJobs,
-    setListPublicJobs,
     switchPublicity,
 }: ComputedJobsTableProps) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -136,14 +132,12 @@ export default function ComputedJobsTable({
                         Download
                     </button>
 
-                    {!listPublicJobs && (
-                        <button
-                            onClick={() => openDeleteJobModal(job[1])}
-                            className="btn btn-ghost btn-sm text-error transition ease-in-out hover:scale-105"
-                            hidden={isJobRunning}>
-                            <TrashIcon className="w-5 h-5" />
-                        </button>
-                    )}
+                    <button
+                        onClick={() => openDeleteJobModal(job[1])}
+                        className="btn btn-ghost btn-sm text-error transition ease-in-out hover:scale-105"
+                        hidden={isJobRunning}>
+                        <TrashIcon className="w-5 h-5" />
+                    </button>
                 </div>
 
                 <div className="lg:hidden dropdown dropdown-end">
@@ -172,17 +166,16 @@ export default function ComputedJobsTable({
                                 Download
                             </button>
                         </li>
-                        {!listPublicJobs && (
-                            <li>
-                                <button
-                                    onClick={() => openDeleteJobModal(job[1])}
-                                    className="flex items-center gap-2 text-error"
-                                    hidden={isJobRunning}>
-                                    <TrashIcon className="w-4 h-4" />
-                                    Delete Job
-                                </button>
-                            </li>
-                        )}
+
+                        <li>
+                            <button
+                                onClick={() => openDeleteJobModal(job[1])}
+                                className="flex items-center gap-2 text-error"
+                                hidden={isJobRunning}>
+                                <TrashIcon className="w-4 h-4" />
+                                Delete Job
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </>
@@ -242,14 +235,13 @@ export default function ComputedJobsTable({
 
                             {selectedJobs.length > 0 && (
                                 <>
-                                    {!listPublicJobs && (
-                                        <button
-                                            className="btn btn-outline btn-error gap-2 transition ease-in-out hover:scale-105"
-                                            onClick={handleMultiDelete}>
-                                            <TrashIcon className="w-4 h-4" />
-                                            Delete Selected
-                                        </button>
-                                    )}
+                                    <button
+                                        className="btn btn-outline btn-error gap-2 transition ease-in-out hover:scale-105"
+                                        onClick={handleMultiDelete}>
+                                        <TrashIcon className="w-4 h-4" />
+                                        Delete Selected
+                                    </button>
+
                                     <button
                                         className="btn btn-ghost hover:bg-white/40 transition ease-in-out hover:scale-105"
                                         onClick={() => setSelectedJobs([])}>
@@ -283,29 +275,6 @@ export default function ComputedJobsTable({
                                     <span className="btn btn-square btn-primary">
                                         <MagnifyingGlassIcon className="h-4 w-4" />
                                     </span>
-                                </div>
-                            </div>
-
-                            {/* Table view switch */}
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text font-medium ml-2 mb-2">View</span>
-                                </label>
-                                <div className="tabs tabs-boxed rounded-full shadow-xl border ">
-                                    <button
-                                        className={`tab rounded-full ${
-                                            !listPublicJobs ? "tab-active bg-einfra-purple text-white hover:text-white" : ""
-                                        }`}
-                                        onClick={() => setListPublicJobs(false)}>
-                                        My Jobs
-                                    </button>
-                                    <button
-                                        className={`tab rounded-full ${
-                                            listPublicJobs ? "tab-active bg-einfra-purple text-white hover:text-white" : ""
-                                        }`}
-                                        onClick={() => setListPublicJobs(true)}>
-                                        Public Jobs
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -383,12 +352,6 @@ export default function ComputedJobsTable({
                                                                     <PlusIcon className="w-4 h-4" />
                                                                     New Computation
                                                                 </Link>
-                                                                <button
-                                                                    className="btn btn-outline btn-sm hover:bg-white/80 transition ease-in-out hover:scale-105"
-                                                                    onClick={() => setListPublicJobs(true)}>
-                                                                    <EyeIcon className="w-4 h-4" />
-                                                                    Browse Public Jobs
-                                                                </button>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -423,31 +386,17 @@ export default function ComputedJobsTable({
                                                         <td>
                                                             <div
                                                                 className="tooltip"
-                                                                data-tip={
-                                                                    listPublicJobs ? "Cannot modify public jobs" : (
-                                                                        `Click to switch to ${job[0] === "Private" ? "Public" : "Private"}`
-                                                                    )
-                                                                }>
+                                                                data-tip={`Click to switch to ${job[0] === "Private" ? "Public" : "Private"}`}>
                                                                 {job[0] === "Private" ?
                                                                     <button
-                                                                        className={`badge badge-primary badge-outline gap-2 transition-colors ${
-                                                                            listPublicJobs ? "opacity-50 cursor-not-allowed" : (
-                                                                                "hover:bg-primary/10 cursor-pointer"
-                                                                            )
-                                                                        }`}
-                                                                        onClick={() => !listPublicJobs && switchPublicity(job[1])}
-                                                                        disabled={listPublicJobs}>
+                                                                        className={`badge badge-primary badge-outline gap-2 transition-colors ${"hover:bg-primary/10 cursor-pointer"}`}
+                                                                        onClick={() => switchPublicity(job[1])}>
                                                                         <LockClosedIcon className="w-4 h-4" />
                                                                         <span className="hidden sm:inline">Private</span>
                                                                     </button>
                                                                 :   <button
-                                                                        className={`badge badge-primary badge-outline gap-2 transition-colors ${
-                                                                            listPublicJobs ? "opacity-50 cursor-not-allowed" : (
-                                                                                "hover:bg-primary/10 cursor-pointer"
-                                                                            )
-                                                                        }`}
-                                                                        onClick={() => !listPublicJobs && switchPublicity(job[1])}
-                                                                        disabled={listPublicJobs}>
+                                                                        className={`badge badge-primary badge-outline gap-2 transition-colors ${"hover:bg-primary/10 cursor-pointer"}`}
+                                                                        onClick={() => switchPublicity(job[1])}>
                                                                         <EyeIcon className="w-4 h-4" />
                                                                         <span className="hidden sm:inline">Public</span>
                                                                     </button>
