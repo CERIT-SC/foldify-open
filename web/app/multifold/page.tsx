@@ -18,7 +18,9 @@ import { BackHomeButton } from "../components/BackHomeButton";
 export default function MultiFold() {
     const [jobName, setJobName] = useState<string>(generateSlug(2));
     const [email, setEmail] = useState<string>("");
-    const [sequence, setSequence] = useState<string>("MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGG");
+    const [sequence, setSequence] = useState<string>(
+        "MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR",
+    );
     const [forceComputation, setForceComputation] = useState<boolean>(false);
     const [makeResultsPublic, setMakeResultsPublic] = useState<boolean>(true);
     const [selectedTools, setSelectedTools] = useState<string[]>([]);
