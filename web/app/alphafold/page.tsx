@@ -14,7 +14,6 @@ import PredictionsPerModelInput from "@/app/components/alphafold/PredictionsPerM
 import DbPresetInput from "@/app/components/alphafold/DbPresetInput";
 import ModelPresetInput from "@/app/components/alphafold/ModelPresetInput";
 import EmailInput from "@/app/components/EmailInput";
-import VersionInput from "../components/alphafold/VersionInput";
 import CheckBoxGroup from "../components/alphafold/CheckBoxGroup";
 import { BackHomeButton } from "../components/BackHomeButton";
 
@@ -249,10 +248,6 @@ EPRHAQLKNLLFFMLKSSSDRVIPQFETTYTELFQGLETELAKNGKAKFNDVGEQAAFRFLGRAYFNSNPEETKLGTSAP
                                             <DbPresetInput
                                                 dbPreset={dbPreset}
                                                 onChange={setDbPreset}
-                                            />
-                                            <VersionInput
-                                                version={version}
-                                                onChange={setVersion}
                                             />
                                         </div>
                                     </div>
