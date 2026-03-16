@@ -11,6 +11,14 @@ interface MultiResultPageProps {
     jobs: string;
 }
 
+const badgeColors = [
+    "bg-[#2f2557] text-white border-[#2f2557]",
+    "bg-[#4cd9f4] text-gray-900 border-[#4cd9f4]",
+    "bg-[#dac8fe] text-gray-900 border-[#dac8fe]",
+    "bg-[#a1a1b7] text-white border-[#a1a1b7]",
+    "bg-[#ec4899] text-white border-[#ec4899]",
+];
+
 export default function MultiResultPage({ params }: { params: Promise<MultiResultPageProps> }) {
     const { jobs } = use(params);
     const jobNames = jobs ? jobs.split("_").filter((name) => name.trim() !== "") : [];
@@ -20,6 +28,7 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
 
     useEffect(() => {
         const fetchStructures = async () => {
+            setLoading(true);
             axios
                 .get(`/api/flask/result/multi/${jobs}/models`)
                 .then((response) => {
@@ -32,8 +41,6 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
 
             setLoading(false);
         };
-
-        setLoading(true);
         fetchStructures();
     }, [jobs]);
 
@@ -48,10 +55,10 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
                         Comparing {jobNames.length} {jobNames.length === 1 ? "structure" : "structures"}
                     </p>
                     <div className="flex flex-wrap justify-center gap-2 mt-4">
-                        {jobNames.map((name) => (
+                        {jobNames.map((name, index) => (
                             <div
                                 key={name}
-                                className="badge badge-primary badge-lg">
+                                className={`badge badge-lg ${badgeColors[index % badgeColors.length]}`}>
                                 {name}
                             </div>
                         ))}
