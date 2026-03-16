@@ -11,14 +11,6 @@ interface MultiResultPageProps {
     jobs: string;
 }
 
-const badgeColors = [
-    "bg-[#2f2557] text-white border-[#2f2557]",
-    "bg-[#4cd9f4] text-gray-900 border-[#4cd9f4]",
-    "bg-[#dac8fe] text-gray-900 border-[#dac8fe]",
-    "bg-[#a1a1b7] text-white border-[#a1a1b7]",
-    "bg-[#ec4899] text-white border-[#ec4899]",
-];
-
 export default function MultiResultPage({ params }: { params: Promise<MultiResultPageProps> }) {
     const { jobs } = use(params);
     const jobNames = jobs ? jobs.split("_").filter((name) => name.trim() !== "") : [];
@@ -55,10 +47,10 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
                         Comparing {jobNames.length} {jobNames.length === 1 ? "structure" : "structures"}
                     </p>
                     <div className="flex flex-wrap justify-center gap-2 mt-4">
-                        {jobNames.map((name, index) => (
+                        {jobNames.map((name) => (
                             <div
                                 key={name}
-                                className={`badge badge-lg ${badgeColors[index % badgeColors.length]}`}>
+                                className="badge badge-lg badge-outline">
                                 {name}
                             </div>
                         ))}
