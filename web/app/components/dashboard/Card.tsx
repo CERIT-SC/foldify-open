@@ -11,7 +11,7 @@ interface CardProps {
 export default function Card({ title, image, link, badgeString }: CardProps) {
     return (
         <>
-            {title === "MultiFold" ? (
+            {title === "MultiFold" ?
                 <Link
                     href={link}
                     className="block h-full">
@@ -24,7 +24,7 @@ export default function Card({ title, image, link, badgeString }: CardProps) {
                         </div>
                     </div>
                 </Link>
-            ) : image ? (
+            : image ?
                 <Link
                     href={link}
                     className="block h-full">
@@ -34,37 +34,36 @@ export default function Card({ title, image, link, badgeString }: CardProps) {
                             backgroundImage: `url(${image.src})`,
                         }}>
                         <div className="card-body">
-                            <div className="h-6 flex justify-end">{badgeString && <div className="badge badge-outline">{badgeString}</div>}</div>
+                            <div className="h-6 flex justify-end">{badgeString && <div className="badge badge-primary">{badgeString}</div>}</div>
 
                             <h2 className="card-title font-bold text-2xl text-white">{title}</h2>
                             <p className="text-white text-sm flex-grow mb-6">
-                                {title === "AlphaFold 3"
-                                    ? "Latest version with advanced capabilities"
-                                    : "Reliable and proven protein structure prediction"}
+                                {title === "AlphaFold 3" ?
+                                    "Latest version with advanced capabilities"
+                                : title === "AlphaFold 2" ?
+                                    "Reliable and proven protein structure prediction"
+                                : title === "ColabFold" ?
+                                    "Fast and efficient protein predictions"
+                                : title === "OmegaFold" ?
+                                    "End-to-end protein structure prediction"
+                                :   "Fast folding with language models"}
                             </p>
                         </div>
                     </div>
                 </Link>
-            ) : (
-                <Link
+            :   <Link
                     href={link}
                     className="block h-full">
-                    <div className="card bg-linear-to-br from-violet-100 to-transparent shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:cursor-pointer h-full">
+                    <div className="card bg-accent/30 border-primary/30 border-2 shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:cursor-pointer h-full">
                         <div className="card-body">
                             <div className="h-6 flex justify-end">{badgeString && <div className="badge badge-outline">{badgeString}</div>}</div>
 
                             <h2 className="card-title font-bold text-2xl">{title}</h2>
-                            <p className="text-base-content/70 text-sm flex-grow mb-6">
-                                {title === "ColabFold"
-                                    ? "Fast and efficient protein predictions"
-                                    : title === "OmegaFold"
-                                    ? "End-to-end protein structure prediction"
-                                    : "Fast folding with language models"}
-                            </p>
+                            <p className="text-base-content/70 text-sm flex-grow mb-6">Protein prediction model</p>
                         </div>
                     </div>
                 </Link>
-            )}
+            }
         </>
     );
 }

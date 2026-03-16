@@ -1,5 +1,7 @@
 import afCardImg from "@/public/alphafold_card_img.jpg";
 import af3CardImg from "@/public/af3_header.jpg";
+import cfCardImg from "@/public/colabfold_card_img.jpg";
+import genericCardImg from "@/public/generic_card_img.png";
 import Card from "@/app/components/dashboard/Card";
 
 export default function ToolCards({}) {
@@ -29,27 +31,30 @@ export default function ToolCards({}) {
                 />
                 <Card
                     title="AlphaFold 3"
-                    image={af3CardImg}
+                    image={genericCardImg}
                     link="/alphafold3/v1"
                     badgeString="Latest"
                 />
                 <Card
                     title="AlphaFold 2"
-                    image={afCardImg}
+                    image={genericCardImg}
                     link="/alphafold"
                     badgeString="Stable"
                 />
                 <Card
                     title="ColabFold"
+                    image={genericCardImg}
                     link="/colabfold"
                     badgeString="Fast Prediction"
                 />
                 <Card
                     title="OmegaFold"
+                    image={genericCardImg}
                     link="/omegafold"
                 />
                 <Card
                     title="ESMFold"
+                    image={genericCardImg}
                     link="/esmfold"
                 />
             </div>
