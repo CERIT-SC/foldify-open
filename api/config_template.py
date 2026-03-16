@@ -23,7 +23,6 @@ class Config:
 
     # FOLDING TOOLS IMAGES
     ESMFOLD_IMAGE = os.getenv("ESMFOLD_IMAGE", "")
-    ALPHAFOLD_IMAGE_V0 = os.getenv("ALPHAFOLD_IMAGE_V0", "") 
     ALPHAFOLD_IMAGE_V2 = os.getenv("ALPHAFOLD_IMAGE_V2", "")
     ALPHAFOLD3_IMAGE = os.getenv("ALPHAFOLD3_IMAGE", "")
     OMEGAFOLD_IMAGE = os.getenv("OMEGAFOLD_IMAGE", "")

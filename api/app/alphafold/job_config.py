@@ -40,7 +40,7 @@ def create_alphafold2_job_config(data, user):
     }
     
     if (data["version"] == "Alphafold 2.2.0"):
-        jobConfig["container"] = Config.ALPHAFOLD_IMAGE_V0
+        jobConfig["container"] = ""
         jobConfig["nodeselector"] = "\n      nodeSelector:\n        nvidia.com/gpu.compute.major: \"8\""
         jobConfig["uniref90"] = "/data/uniref90/uniref90.fasta"
         jobConfig["mgnify"] = "/data/mgnify/mgy_clusters_2018_12.fa"

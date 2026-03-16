@@ -70,11 +70,6 @@ spec:
                             configMapKeyRef:
                                 name: foldify-config
                                 key: ESMFOLD_IMAGE
-                      - name: ALPHAFOLD_IMAGE_V0
-                        valueFrom:
-                            configMapKeyRef:
-                                name: foldify-config
-                                key: ALPHAFOLD_IMAGE_V0
                       - name: ALPHAFOLD_IMAGE_V2
                         valueFrom:
                             configMapKeyRef:

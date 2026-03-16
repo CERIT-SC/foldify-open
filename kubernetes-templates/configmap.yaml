@@ -5,7 +5,6 @@ metadata:
 data:
     # Container Images (full image paths)
     ESMFOLD_IMAGE: "registry/username/image:tag" # change this to your actual image path
-    ALPHAFOLD_IMAGE_V0: "registry/username/image:tag" # change this to your actual image path
     ALPHAFOLD_IMAGE_V2: "registry/username/image:tag" # change this to your actual image path
     ALPHAFOLD3_IMAGE: "registry/username/image:tag" # change this to your actual image path
     OMEGAFOLD_IMAGE: "registry/username/image:tag" # change this to your actual image path

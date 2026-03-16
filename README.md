@@ -24,7 +24,7 @@ For development purposes (the submission of jobs will not work), the application
 1. Copy the template `config-template.py` file to `config.py` in the `api` directory:
     ```bash
     cd api
-    cp config-template.py config.py
+    cp config_template.py config.py
     ```
 2. All the variables listed in the config must be set as ENV variables in your deployment environment. In particular, set the `SESSION_SECRET` variable to a strong random secret generated with `openssl rand -base64 32`. The rest of the variables shall be set with needed values for your environment.
 
@@ -41,7 +41,7 @@ For development purposes (the submission of jobs will not work), the application
 
 1. Copy the template kubernetes manifests from `kubernetes-templates` directory to the new `kubernetes` directory (including all the files inside):
     ```bash
-    cp -r kubernetes-manifests kubernetes
+    cp -r kubernetes-templates kubernetes
     ```
 2. Edit `secrets.yaml` and set the `SESSION_SECRET` variable to a strong random secret generated with `openssl rand -base64 32`. All the other manifests update with your namespace, image names, and other necessary configurations as described in the comments within each file. The `configmap.yaml` needs to be updated with the same ENV variables as in the backend configuration.
 

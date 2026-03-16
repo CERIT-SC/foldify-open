@@ -47,7 +47,7 @@ spec:
                       - name: SESSION_SECRET
                         valueFrom:
                             secretKeyRef:
-                                name: session-secret
+                                name: foldify-secrets
                                 key: SESSION_SECRET
 ---
 apiVersion: v1
