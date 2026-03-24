@@ -1,5 +1,5 @@
 // filepath: /Users/romanaduraciova/Desktop/alphafold-reactapp/foldify-app-main/web/app/components/alphafold/CheckBoxGroup.tsx
-import React from 'react';
+import React from "react";
 
 interface CheckBoxGroupProps {
     forceComputation: boolean;
@@ -24,30 +24,30 @@ export default function CheckBoxGroup({
 }: CheckBoxGroupProps) {
     const checkboxOptions = [
         {
-            id: 'forceComputation',
-            label: 'Force Computation',
-            description: 'Force re-computation even if results exist',
+            id: "forceComputation",
+            label: "Force Computation",
+            description: "Force re-computation even if results exist",
             checked: forceComputation,
             onChange: onForceComputationChange,
         },
         {
-            id: 'makeResultsPublic',
-            label: 'Make Results Public',
-            description: 'Allow others to view your results',
+            id: "makeResultsPublic",
+            label: "Make Results Public via URL",
+            description: "Share your results with others via public URL",
             checked: makeResultsPublic,
             onChange: onMakeResultsPublicChange,
         },
         {
-            id: 'runRelax',
-            label: 'Run Relax',
-            description: 'Apply relaxation to the final structure',
+            id: "runRelax",
+            label: "Run Relax",
+            description: "Apply relaxation to the final structure",
             checked: runRelax,
             onChange: onRunRelaxChange,
         },
         {
-            id: 'reuseMSAs',
-            label: 'Reuse MSAs',
-            description: 'Reuse existing multiple sequence alignments',
+            id: "reuseMSAs",
+            label: "Reuse MSAs",
+            description: "Reuse existing multiple sequence alignments",
             checked: reuseMSAs,
             onChange: onReuseMsasChange,
         },
@@ -59,8 +59,7 @@ export default function CheckBoxGroup({
                 {checkboxOptions.map((option) => (
                     <label
                         key={option.id}
-                        className="card bg-base-200/50 hover:bg-base-200 cursor-pointer transition-colors"
-                    >
+                        className="card bg-base-200/50 hover:bg-base-200 cursor-pointer transition-colors">
                         <div className="card-body p-4">
                             <div className="flex items-start space-x-3">
                                 <input

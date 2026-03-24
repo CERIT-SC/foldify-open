@@ -16,8 +16,8 @@ export const CheckBoxGroup = ({ forceComputation, onForceComputationChange, make
         },
         {
             id: "makeResultsPublic",
-            label: "Make Results Public",
-            description: "Allow others to view your results",
+            label: "Make Results Public via URL",
+            description: "Share your results with others via public URL",
             checked: makeResultsPublic,
             onChange: onMakeResultsPublicChange,
         },
