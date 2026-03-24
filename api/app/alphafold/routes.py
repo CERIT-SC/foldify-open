@@ -4,6 +4,7 @@ from kubernetes import client
 
 from app.alphafold.utilities import deploy_alphafold2_job
 from app.alphafold.input_handling import validate_alphafold2_input, split_sequence_input
+from app.shared.job_submitting import check_running_jobs_limit
 
 import logging
 
@@ -16,6 +17,11 @@ alphafold = Blueprint('alphafold', __name__)
 def submit_job(current_user):
     """Submit a new AlphaFold job to the Kubernetes cluster."""
     try:
+        # Check running jobs limit
+        limit_check = check_running_jobs_limit(current_user)
+        if limit_check:
+            return limit_check
+        
         data = request.json
         jobName = data["jobName"]
 

@@ -12,6 +12,28 @@ from app.shared.common import get_input_path, get_jobs_list, get_working_directo
 from app.shared.kubernetes import get_running_jobs
 
 
+# Maximum number of running jobs allowed per user
+MAX_RUNNING_JOBS = 5
+
+
+def check_running_jobs_limit(current_user):
+    """Check if user has reached the maximum number of running jobs."""
+    running_jobs = get_running_jobs(current_user)
+    
+    if running_jobs is None:
+        logging.error('Error retrieving running jobs count.')
+        return jsonify({'error': 'Could not retrieve running jobs count.'}), 500
+    
+    running_jobs_count = len(running_jobs)
+    logging.info(f'User {current_user} has {running_jobs_count} running jobs.')
+    
+    if running_jobs_count >= MAX_RUNNING_JOBS:
+        logging.warning(f'User {current_user} has {running_jobs_count} running jobs, which exceeds the limit.')
+        return jsonify({'error': f'You have reached the maximum number of running jobs ({MAX_RUNNING_JOBS}). Please wait for some jobs to finish before starting new ones.'}), 403
+    
+    return None
+
+
 def generate_salt(length=64):
     """Generate a random salt for the job."""
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))

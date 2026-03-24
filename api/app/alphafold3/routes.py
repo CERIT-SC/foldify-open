@@ -6,17 +6,24 @@ from pydantic import ValidationError
 
 from app.alphafold3.validation import Job
 from app.alphafold3.v1_submission import save_input_config, run_alphafold3_prediction, save_json_input, save_ccd_file
+from app.shared.job_submitting import check_running_jobs_limit
 import logging
 
 
 # Define the Flask Blueprint
 alphafold3 = Blueprint('alphafold3', __name__)
+
     
 @alphafold3.route('/v1/submit', methods=["POST"])
 @token_required
 def submit_af3_job(current_user):
     """ Submit an AlphaFold3 job using advanced configuration."""
     try:
+        # Check running jobs limit
+        limit_check = check_running_jobs_limit(current_user)
+        if limit_check:
+            return limit_check
+        
         data = json.loads(request.form["data"])
         validated_data = Job(**data)
         ## Turn the validated data into a json
@@ -56,6 +63,11 @@ def submit_af3_job(current_user):
 def submit_af3_job_json(current_user):
     """Submit an AlphaFold3 job using a JSON configuration from client."""
     try:
+        # Check running jobs limit
+        limit_check = check_running_jobs_limit(current_user)
+        if limit_check:
+            return limit_check
+        
         computation_config = json.loads(request.form["data"])
         json_file = request.files.get("jsonFile")
 

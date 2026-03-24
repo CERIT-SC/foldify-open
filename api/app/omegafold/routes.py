@@ -6,12 +6,12 @@ from app.shared.common import NAMESPACE
 from app.shared.kubernetes import connect_to_k8s
 from app.omegafold.utilities import (
     validate_input,
-    create_job_config, 
-    create_file_config, 
+    create_job_config,
+    create_file_config,
     create_job_object)
 from app.shared.job_submitting import (
-    check_job_uniqueness, 
-    create_k8s_job, create_input_files)
+    check_job_uniqueness,
+    create_k8s_job, create_input_files, check_running_jobs_limit)
 
 import logging
 
@@ -21,12 +21,18 @@ omegafold = Blueprint('omegafold', __name__)
 # Connect to kubernetes cluster
 batchApi = connect_to_k8s()
 
+
 @omegafold.route('/submit', methods=['POST'])
 @token_required
 def submit_job(current_user):
     """Submit a new OmegaFold job to the Kubernetes cluster."""
 
     try:
+        # Check running jobs limit
+        limit_check = check_running_jobs_limit(current_user)
+        if limit_check:
+            return limit_check
+        
         data = request.json
         # Validate the request data
         validation_error = validate_input(data)
