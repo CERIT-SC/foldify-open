@@ -114,6 +114,4 @@ def get_jobs_list(user):
     # Combine user and public jobs without duplicates
     list_of_jobs = user_jobs + [job for job in public_jobs if job not in user_jobs]
 
-    logging.info(f"Jobs list for user {user}: {list_of_jobs}")
-
     return list_of_jobs

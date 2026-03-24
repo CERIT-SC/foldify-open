@@ -29,7 +29,7 @@ def check_running_jobs_limit(current_user):
     
     if running_jobs_count >= MAX_RUNNING_JOBS:
         logging.warning(f'User {current_user} has {running_jobs_count} running jobs, which exceeds the limit.')
-        return jsonify({'error': f'You have reached the maximum number of running jobs ({MAX_RUNNING_JOBS}). Please wait for some jobs to finish before starting new ones.'}), 403
+        return jsonify({'error': f'You have reached the maximum number of running jobs. Please wait for some jobs to finish before starting new ones.'}), 403
     
     return None
 
@@ -223,7 +223,6 @@ def create_input_files(jobConfig, fileConfig, user):
         except Exception as e:
             logging.error(f"Failed to create directory {path}: {e}")
             return jsonify({"error": f"Failed to create directory {path}: {str(e)}"}), 500
-    logging.info(f"Input directory exists: {path}")
 
     if os.path.exists(json_path):
         if jobConfig["forceComputation"] is False:

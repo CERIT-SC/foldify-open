@@ -9,11 +9,6 @@ from config import Config
 
 def validate_session_token(token):
     """Validate the session JWT token and extract session ID."""
-    logging.warning(f"PVC_VOL1 {Config.PVC_VOL1_ALPHAFOLD}")
-    logging.warning(f"PVC_VOL1_AF3 {Config.PVC_VOL1_ALPHAFOLD3}")
-    logging.warning(f"PVC_VOL2 {Config.PVC_VOL2}")
-    logging.warning(f"PVC_STORAGE {Config.PVC_STORAGE}")
-    logging.warning(f"PVC_TMP {Config.PVC_TMP}")
     
     session_secret = os.getenv('SESSION_SECRET', Config.SESSION_SECRET)
     try:

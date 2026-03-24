@@ -31,7 +31,6 @@ def get_jobs_of_user(current_user):
         # Determine status: use running status if available, otherwise determine from result
         if job in running_jobs_dict:
             status = running_jobs_dict[job]
-            logging.info(f"Job {job} is currently running with status {status}.")
             # Add running jobs to separate array
             if start != None:
                 running_jobs_array.append([shared, name, service, start, result, status])
