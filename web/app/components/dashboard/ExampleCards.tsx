@@ -26,9 +26,11 @@ const EXAMPLE_CONFIGS = [
     },
     {
         title: "Dipeptidylpeptidase IV, N-terminal domain",
-        description: "The example of 746 residues demonstrates the large protein complex prediction using Multifold. Predictions over 600 tokens are available in the full Foldify version at **[https://foldify.cloud.e-infra.cz](https://foldify.cloud.e-infra.cz)**.",
+        description:
+            "The example of 746 residues demonstrates the large protein complex prediction using Multifold. Predictions over 600 tokens are available in the full Foldify version at **[https://foldify.cloud.e-infra.cz](https://foldify.cloud.e-infra.cz)**.",
         tool: "Multifold",
-        jobName: "multi/MULTIFOLD-dipept-AF3_MULTIFOLD-dipept-OMF_MULTIFOLD-dipept-EMF",
+        jobName:
+            "multi/MULTIFOLD-dipeptidylpeptidase-AF3_MULTIFOLD-dipeptidylpeptidase-AF2_MULTIFOLD-dipeptidylpeptidase-OMF_MULTIFOLD-dipeptidylpeptidase-EMF_MULTIFOLD-dipeptidylpeptidase-CBF",
         data: dipeptExampleData.models,
         format: "multiple",
     },
@@ -48,8 +50,7 @@ export default function ExampleCards() {
                         Example Protein Structures
                     </h1>
                     <p className="text-base text-base-content/80 mx-auto leading-relaxed">
-                        Explore these pre-computed examples to see our platform in action. Each structure demonstrates
-                        different prediction
+                        Explore these pre-computed examples to see our platform in action. Each structure demonstrates different prediction
                         capabilities and methodologies.
                     </p>
                 </header>
