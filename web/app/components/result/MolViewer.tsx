@@ -34,20 +34,94 @@ interface MolViewerProps {
     width?: number;
     height?: string;
     showRMSD?: boolean; // New prop to control RMSD display
+    visibleStructures?: Record<string, boolean>;
+    onMetricsLoaded?: (rmsdData: Record<string, number>, tmScoreData: Record<string, number>) => void;
+    onStructuresLoaded?: (names: string[]) => void;
 }
 
-const MolViewer = ({ structureData, format, width = 800, height, showRMSD = false }: MolViewerProps) => {
+type CellRefs = string[];
+
+async function loadSingleStructure(
+    plugin: any,
+    name: string,
+    item: StructureInfo,
+    index: number
+): Promise<CellRefs | null> {
+    const colorValue = STRUCTURE_COLORS[index % STRUCTURE_COLORS.length];
+    const cellRefs: CellRefs = [];
+    try {
+        const data = await plugin.builders.data.rawData({ data: item.model, label: name });
+        const traj = await plugin.builders.structure.parseTrajectory(data, item.dataFormat);
+        const model = await plugin.builders.structure.createModel(traj);
+        const structure = await plugin.builders.structure.createStructure(model, { label: name });
+        cellRefs.push(structure.ref);
+
+        const components = {
+            polymer: await plugin.builders.structure.tryCreateComponentStatic(structure, "polymer"),
+            ligand: await plugin.builders.structure.tryCreateComponentStatic(structure, "ligand"),
+        };
+
+        if (components.polymer) {
+            cellRefs.push(components.polymer.ref);
+            const polymerRep = await plugin.builders.structure.representation.addRepresentation(components.polymer, {
+                type: "cartoon",
+                color: "uniform",
+                colorParams: { value: colorValue },
+            });
+            cellRefs.push(polymerRep.ref);
+        }
+
+        if (components.ligand) {
+            cellRefs.push(components.ligand.ref);
+            const ligandRep = await plugin.builders.structure.representation.addRepresentation(components.ligand, {
+                type: "ball-and-stick",
+                color: "uniform",
+                colorParams: { value: colorValue },
+            });
+            cellRefs.push(ligandRep.ref);
+        }
+
+        return cellRefs;
+    } catch (e) {
+        console.warn(`Failed to load structure ${name}:`, e);
+        return null;
+    }
+}
+
+const MolViewer = ({
+    structureData,
+    format,
+    width = 800,
+    height,
+    showRMSD = false,
+    visibleStructures,
+    onMetricsLoaded,
+    onStructuresLoaded,
+}: MolViewerProps) => {
     const viewerRef = useRef<HTMLDivElement | null>(null);
     const viewerInstanceRef = useRef<any>(null);
+    const pluginRef = useRef<any>(null);
+    const structureRefsRef = useRef<Record<string, CellRefs>>({});
+    const rawDataRef = useRef<Record<string, StructureInfo>>({});
+    const nameToIndexRef = useRef<Record<string, number>>({});
+    const loadedRef = useRef<Record<string, boolean>>({});
     const [loading, setLoading] = useState(false);
     const [rmsdData, setRmsdData] = useState<Record<string, number>>({});
     const [tmScoreData, setTmScoreData] = useState<Record<string, number>>({});
+    const onMetricsLoadedRef = useRef(onMetricsLoaded);
+    onMetricsLoadedRef.current = onMetricsLoaded;
+    const onStructuresLoadedRef = useRef(onStructuresLoaded);
+    onStructuresLoadedRef.current = onStructuresLoaded;
 
     useEffect(() => {
         // Basic guards: nothing to do if no data
         if (!structureData) return;
         if (format === "multiple" && Object.keys(structureData as Record<string, any>).length === 0) return;
         setLoading(true);
+        structureRefsRef.current = {};
+        rawDataRef.current = {};
+        nameToIndexRef.current = {};
+        loadedRef.current = {};
 
         const loadMolstar = async () => {
             try {
@@ -82,6 +156,8 @@ const MolViewer = ({ structureData, format, width = 800, height, showRMSD = fals
                         console.warn("Error disposing previous viewer:", e);
                     }
                     viewerInstanceRef.current = null;
+                    pluginRef.current = null;
+                    structureRefsRef.current = {};
                 }
 
                 // Create Viewer instance
@@ -92,9 +168,8 @@ const MolViewer = ({ structureData, format, width = 800, height, showRMSD = fals
 
                 // Store viewer instance for cleanup
                 viewerInstanceRef.current = viewer;
-
-                // Access the plugin through the viewer instance
                 const plugin = viewer.plugin;
+                pluginRef.current = plugin;
 
                 // Set white background for all viewers
                 plugin.canvas3d?.setProps({
@@ -109,10 +184,10 @@ const MolViewer = ({ structureData, format, width = 800, height, showRMSD = fals
 
                     for (let i = 0; i < entries.length; i++) {
                         const [name, item] = entries[i];
-                        const colorValue = STRUCTURE_COLORS[i % STRUCTURE_COLORS.length];
+                        rawDataRef.current[name] = item;
+                        nameToIndexRef.current[name] = i;
 
                         try {
-                            // Store RMSD and TM-score if available
                             if (item.rmsd !== undefined) {
                                 rmsdValues[name] = item.rmsd;
                             }
@@ -120,38 +195,10 @@ const MolViewer = ({ structureData, format, width = 800, height, showRMSD = fals
                                 tmScoreValues[name] = item.tm_score;
                             }
 
-                            // Load structure with custom label (name)
-                            const data = await plugin.builders.data.rawData({ data: item.model, label: name });
-                            const traj = await plugin.builders.structure.parseTrajectory(data, item.dataFormat);
-
-                            if (item.dataFormat === "mmcif") {
-                                await plugin.builders.structure.hierarchy.applyPreset(traj, "default");
-                            } else {
-                                const model = await plugin.builders.structure.createModel(traj);
-                                const structure = await plugin.builders.structure.createStructure(model, { label: name });
-
-                                // Create components
-                                const components = {
-                                    polymer: await plugin.builders.structure.tryCreateComponentStatic(structure, "polymer"),
-                                    ligand: await plugin.builders.structure.tryCreateComponentStatic(structure, "ligand"),
-                                };
-
-                                // Create representations with custom e-infra colors for multi-structure comparison
-                                if (components.polymer) {
-                                    await plugin.builders.structure.representation.addRepresentation(components.polymer, {
-                                        type: "cartoon",
-                                        color: "uniform",
-                                        colorParams: { value: colorValue },
-                                    });
-                                }
-
-                                if (components.ligand) {
-                                    await plugin.builders.structure.representation.addRepresentation(components.ligand, {
-                                        type: "ball-and-stick",
-                                        color: "uniform",
-                                        colorParams: { value: colorValue },
-                                    });
-                                }
+                            const cellRefs = await loadSingleStructure(plugin, name, item, i);
+                            if (cellRefs) {
+                                structureRefsRef.current[name] = cellRefs;
+                                loadedRef.current[name] = true;
                             }
                         } catch (e) {
                             console.warn(`Failed to load structure ${name}:`, e);
@@ -161,6 +208,8 @@ const MolViewer = ({ structureData, format, width = 800, height, showRMSD = fals
                     // Store RMSD and TM-score data for display
                     setRmsdData(rmsdValues);
                     setTmScoreData(tmScoreValues);
+                    onMetricsLoadedRef.current?.(rmsdValues, tmScoreValues);
+                    onStructuresLoadedRef.current?.(entries.map(([name]) => name));
 
                     // Focus camera on loaded structures
                     await plugin.managers.camera.focusLoci(plugin.managers.structure.hierarchy.current.structures);
@@ -216,9 +265,54 @@ const MolViewer = ({ structureData, format, width = 800, height, showRMSD = fals
                     console.warn("Error disposing viewer on cleanup:", e);
                 }
                 viewerInstanceRef.current = null;
+                pluginRef.current = null;
+                structureRefsRef.current = {};
             }
         };
     }, [structureData, format, height]);
+
+    // Effect to toggle structure visibility based on visibleStructures prop
+    useEffect(() => {
+        const plugin = pluginRef.current;
+        if (!plugin || !visibleStructures) return;
+
+        const applyVisibilityChanges = async () => {
+            for (const [name, visible] of Object.entries(visibleStructures)) {
+                const currentlyLoaded = loadedRef.current[name] ?? true;
+                if (visible === currentlyLoaded) continue;
+
+                if (!visible && currentlyLoaded) {
+                    const refs = structureRefsRef.current[name];
+                    if (refs && refs.length > 0) {
+                        try {
+                            const update = plugin.build();
+                            [...refs].reverse().forEach((ref) => update.delete(ref));
+                            await update.commit();
+                        } catch (e) {
+                            console.warn(`Failed to hide structure ${name}:`, e);
+                        }
+                    }
+                    loadedRef.current[name] = false;
+                } else if (visible && !currentlyLoaded) {
+                    const item = rawDataRef.current[name];
+                    const idx = nameToIndexRef.current[name] ?? 0;
+                    if (item) {
+                        try {
+                            const cellRefs = await loadSingleStructure(plugin, name, item, idx);
+                            if (cellRefs) {
+                                structureRefsRef.current[name] = cellRefs;
+                                loadedRef.current[name] = true;
+                            }
+                        } catch (e) {
+                            console.warn(`Failed to show structure ${name}:`, e);
+                        }
+                    }
+                }
+            }
+        };
+
+        applyVisibilityChanges();
+    }, [visibleStructures]);
 
     return (
         <>

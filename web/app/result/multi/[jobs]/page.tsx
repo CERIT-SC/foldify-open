@@ -5,6 +5,7 @@ import { BackHomeButton } from "@/app/components/BackHomeButton";
 import Loading from "@/app/components/Loading";
 import { FormInfoAlert } from "@/app/components/FormInfoAlert";
 import MolViewer from "@/app/components/result/MolViewer";
+import ComparisonQualityTable from "@/app/components/result/ComparisonQualityTable";
 import axios from "axios";
 
 interface MultiResultPageProps {
@@ -17,6 +18,9 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
 
     const [loading, setLoading] = useState(false);
     const [validStructures, setValidStructures] = useState(null);
+    const [visibleStructures, setVisibleStructures] = useState<Record<string, boolean>>({});
+    const [rmsdData, setRmsdData] = useState<Record<string, number>>({});
+    const [tmScoreData, setTmScoreData] = useState<Record<string, number>>({});
 
     useEffect(() => {
         const fetchStructures = async () => {
@@ -35,6 +39,10 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
         };
         fetchStructures();
     }, [jobs]);
+
+    const handleToggleVisibility = (name: string, visible: boolean) => {
+        setVisibleStructures((prev) => ({ ...prev, [name]: visible }));
+    };
 
     return (
         <>
@@ -74,9 +82,24 @@ export default function MultiResultPage({ params }: { params: Promise<MultiResul
                                     structureData={validStructures}
                                     format="multiple"
                                     height="40rem"
-                                    showRMSD={true}
+                                    visibleStructures={visibleStructures}
+                                    onMetricsLoaded={(rmsd, tmScore) => {
+                                        setRmsdData(rmsd);
+                                        setTmScoreData(tmScore);
+                                    }}
+                                    onStructuresLoaded={(names) => {
+                                        const initialVisibility: Record<string, boolean> = {};
+                                        names.forEach((n) => (initialVisibility[n] = true));
+                                        setVisibleStructures(initialVisibility);
+                                    }}
                                 />
                             </div>
+                            <ComparisonQualityTable
+                                rmsdData={rmsdData}
+                                tmScoreData={tmScoreData}
+                                visibleStructures={visibleStructures}
+                                onToggleVisibility={handleToggleVisibility}
+                            />
                         </div>
                     }
                 </div>
