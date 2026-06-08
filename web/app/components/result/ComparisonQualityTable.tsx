@@ -1,6 +1,8 @@
 interface ComparisonQualityTableProps {
     rmsdData: Record<string, number>;
     tmScoreData: Record<string, number>;
+    visibleStructures?: Record<string, boolean>;
+    onToggleVisibility?: (name: string, visible: boolean) => void;
 }
 
 const badgeColors = [
@@ -11,7 +13,12 @@ const badgeColors = [
     "bg-[#ec4899] text-white border-[#ec4899]",
 ];
 
-export default function ComparisonQualityTable({ rmsdData, tmScoreData }: ComparisonQualityTableProps) {
+export default function ComparisonQualityTable({
+    rmsdData,
+    tmScoreData,
+    visibleStructures,
+    onToggleVisibility,
+}: ComparisonQualityTableProps) {
     if (Object.keys(rmsdData).length === 0) {
         return null;
     }
@@ -22,6 +29,7 @@ export default function ComparisonQualityTable({ rmsdData, tmScoreData }: Compar
                 <table className="table w-auto min-w-2xl">
                     <thead>
                         <tr>
+                            <th>Show</th>
                             <th>Model</th>
                             <th className="text-right">RMSD (Å)</th>
                             <th className="text-right">TM-score</th>
@@ -34,10 +42,20 @@ export default function ComparisonQualityTable({ rmsdData, tmScoreData }: Compar
                     <tbody>
                         {Object.entries(rmsdData).map(([name, rmsd], index) => {
                             const tmScore = tmScoreData[name];
+                            const isVisible = visibleStructures?.[name] ?? true;
                             return (
                                 <tr
                                     key={name}
                                     className="hover">
+                                    <td className="text-center">
+                                        <input
+                                            type="checkbox"
+                                            className="checkbox checkbox-primary checkbox-sm"
+                                            checked={isVisible}
+                                            onChange={(e) => onToggleVisibility?.(name, e.target.checked)}
+                                            title={isVisible ? "Hide in viewer" : "Show in viewer"}
+                                        />
+                                    </td>
                                     <td>
                                         <span className={`badge badge-md ${badgeColors[index % badgeColors.length]}`}>{name}</span>
                                     </td>

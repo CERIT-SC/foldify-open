@@ -1,6 +1,3 @@
-import afCardImg from "@/public/alphafold_card_img.jpg";
-import af3CardImg from "@/public/af3_header.jpg";
-import cfCardImg from "@/public/colabfold_card_img.jpg";
 import genericCardImg from "@/public/generic_card_img.png";
 import Card from "@/app/components/dashboard/Card";
 
