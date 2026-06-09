@@ -35,3 +35,11 @@ class Config:
     PVC_STORAGE = os.getenv("PVC_STORAGE")
     PVC_TMP = os.getenv("PVC_TMP")
 
+    # README files for output archives
+    README_BASE_PATH = os.getenv("README_BASE_PATH", "/mnt/readmes")
+    README_ALPHAFOLD2 = os.path.join(README_BASE_PATH, "alphafold2.md")
+    README_ALPHAFOLD3 = os.path.join(README_BASE_PATH, "alphafold3.md")
+    README_COLABFOLD = os.path.join(README_BASE_PATH, "colabfold.md")
+    README_ESMFOLD = os.path.join(README_BASE_PATH, "esmfold.md")
+    README_OMEGAFOLD = os.path.join(README_BASE_PATH, "omegafold.md")
+

@@ -48,6 +48,10 @@ def construct_command(jobConfig, user):
         f'if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; '
         f'then ln -sfr {output_dir} /mnt/output/public/{jobConfig["simplename"]} ; fi'
     )
+    readme_cmd = (
+        f'if [ -f "{Config.README_ALPHAFOLD2}" ]; then '
+        f'cp "{Config.README_ALPHAFOLD2}" {output_dir}/README.md; fi'
+    )
     compression_cmd = (
         f'cd /mnt/output/{user}; '
         f'cp -r {jobConfig["simplename"]} /storage; '
@@ -71,7 +75,7 @@ def construct_command(jobConfig, user):
         f'| cat - {output_dir}/stdout | ssmtp -t; exit 1; '
         f' fi; fi'
     )
-    command = " && ".join([mkdir_cmd, alphafold_cmd, public_symlink_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])
+    command = " && ".join([mkdir_cmd, alphafold_cmd, public_symlink_cmd, readme_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])
 
     return command
 
