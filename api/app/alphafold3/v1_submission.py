@@ -130,6 +130,10 @@ def create_job_object(data, user):
         f'if [ "{data["public"]}" == "True" ] ; '
         f'then ln -sfr {output_dir} /mnt/output/public/{data["name"]} ; fi'
     )
+    readme_cmd = (
+        f'if [ -f "{Config.README_ALPHAFOLD3}" ]; then '
+        f'cp "{Config.README_ALPHAFOLD3}" {output_dir}/README.md; fi'
+    )
     compression_cmd = (
         f'cd /mnt/output/{user} ; '
         f'cp -r {data["name"]} /storage; '
@@ -156,9 +160,9 @@ def create_job_object(data, user):
     )
     
     if mmseqs2_cmd != "":
-        af3Args = " && ".join([mkdir_cmd, mmseqs2_cmd, run_cmd, public_symlink_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])
+        af3Args = " && ".join([mkdir_cmd, mmseqs2_cmd, run_cmd, public_symlink_cmd, readme_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])
     else:
-        af3Args = " && ".join([mkdir_cmd, run_cmd, public_symlink_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])
+        af3Args = " && ".join([mkdir_cmd, run_cmd, public_symlink_cmd, readme_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])
 
     # Unique job name with random lowercase letters
     unique_job_name = data["name"] + "-" + ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
