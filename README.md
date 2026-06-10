@@ -155,7 +155,7 @@ The application supports multiple protein structure prediction tools. Each tool 
 - OmegaFold
 - ESMFold
 
-The configuration for these tools is contained within the `configmap.yaml` file in the `kubernetes` directory. Ensure that the Docker images for each tool are built and pushed to your container registry before deploying the application.
+The configuration for these tools is contained within the `configmap.yaml` file in the `kubernetes` directory. Ensure that the Docker images for each tool are built and pushed to your container registry before deploying the application. For detailed build instructions, see [docker/README.md](docker/README.md).
 
 ## License
 

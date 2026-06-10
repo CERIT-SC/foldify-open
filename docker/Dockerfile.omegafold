@@ -1,0 +1,14 @@
+FROM nvcr.io/nvidia/pytorch:24.10-py3
+
+RUN pip install --no-cache-dir biopython==1.81 \
+ && pip install --no-cache-dir git+https://github.com/HeliXonProtein/OmegaFold.git@v1.1.0
+
+RUN apt-get update \
+    && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        zip \
+        ssmtp \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get autoremove -y \
+    && apt-get clean
+
+RUN useradd -l -m -s /bin/bash -N -u 1000 jovyan

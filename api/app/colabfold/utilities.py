@@ -257,14 +257,16 @@ def create_job_object(jobConfig, user):
                             volume_mounts=[client.V1VolumeMount(name="vol-1", mount_path="/data"),
                                             client.V1VolumeMount(name="vol-2", mount_path="/mnt"),
                                             client.V1VolumeMount(name="dshm", mount_path="/dev/shm"),
-                                            client.V1VolumeMount(name="storage", mount_path="/storage")
+                                            client.V1VolumeMount(name="storage", mount_path="/storage"),
+                                            client.V1VolumeMount(name="ssmtp-config", mount_path="/etc/ssmtp", read_only=True)
                                             ],
                         )
                     ],
                     volumes=[client.V1Volume(name="vol-1", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_VOL1_ALPHAFOLD)),
                              client.V1Volume(name="vol-2", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_VOL2)),
                              client.V1Volume(name="dshm", empty_dir=client.V1EmptyDirVolumeSource(medium="Memory", size_limit="120Gi")),
-                             client.V1Volume(name="storage", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_STORAGE))
+                             client.V1Volume(name="storage", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_STORAGE)),
+                             client.V1Volume(name="ssmtp-config", secret=client.V1SecretVolumeSource(secret_name=Config.SSMTP_SECRET, items=[client.V1KeyToPath(key="ssmtp.conf", path="ssmtp.conf")]))
                              ],
                 )
             )
