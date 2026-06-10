@@ -50,8 +50,7 @@ const Header = () => {
 
                     {/* Documentation */}
                     <Link
-                        href="https://docs.cerit.io/en/docs/web-apps/foldify"
-                        target="_blank"
+                        href="/docs"
                         className="btn btn-ghost btn-sm hover:bg-primary/10 hover:text-primary transition-colors"
                         title="Documentation">
                         <DocumentTextIcon className="w-5 h-5"/>
@@ -94,13 +93,12 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                            <a
-                                href="https://docs.cerit.io/en/docs/web-apps/foldify"
-                                target="_blank"
+                            <Link
+                                href="/docs"
                                 className="flex items-center gap-2">
                                 <DocumentTextIcon className="w-4 h-4"/>
                                 Documentation
-                            </a>
+                            </Link>
                         </li>
                         <div className="divider my-1"></div>
                         {navigationItems.map((item) => (
