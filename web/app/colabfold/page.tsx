@@ -144,7 +144,7 @@ export default function Colabfold() {
 
         if (!email) {
             errors.email = "Email is required.";
-        } else if (!/\b[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+\b/.test(email)) {
+        } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             errors.email = "Email is invalid.";
         }
 

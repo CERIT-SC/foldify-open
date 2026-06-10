@@ -3,6 +3,9 @@ import re
 from datetime import datetime
 import logging
 
+# strict email regex
+_EMAIL_RE = re.compile(r"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+
 def validate_job_name(job_name):
     """Validate the job name."""
     if not isinstance(job_name, str):
@@ -56,6 +59,10 @@ def validate_numeric_input(value):
 
 def validate_email(email):
     """Validate the email address."""
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+    if not isinstance(email, str):
+        return jsonify({"error": "Invalid email address."}), 400
+    if len(email) > 254:
+        return jsonify({"error": "Invalid email address."}), 400
+    if not _EMAIL_RE.match(email):
         return jsonify({"error": "Invalid email address."}), 400
     return None

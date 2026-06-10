@@ -1,4 +1,5 @@
 from kubernetes import client
+import shlex
 
 from app.shared.job_submitting import generate_salt
 from config import Config
@@ -62,8 +63,9 @@ def construct_command(jobConfig, user):
         f'if [ -s "{output_dir}/ranking_debug.json" ] ; '
         f'then touch "{output_dir}/alphafold.done"; fi'
     )
+    email_quoted = shlex.quote(jobConfig.get("email", ""))
     email_notification_cmd = (
-        f'if [ ! -z "{jobConfig["email"]}" ]; '
+        f'if [ ! -z {email_quoted} ]; '
         f'then if [ -s "{output_dir}/ranking_debug.json" ] ; '
         f'then echo -e "To:{jobConfig["email"]}\nFrom:{Config.EMAIL_FROM}\n'
         f'Subject:Alphafold computation has finished\n\n'

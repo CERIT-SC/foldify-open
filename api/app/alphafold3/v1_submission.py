@@ -3,6 +3,7 @@ from flask import jsonify
 import json
 import os
 import random
+import shlex
 import string
 from app.shared.common import get_input_path, get_working_directory, get_output_path
 from app.shared.common import NAMESPACE
@@ -144,8 +145,9 @@ def create_job_object(data, user):
         f'if [ -s "{output_dir}/{sanitised_name}/{sanitised_name}_ranking_scores.csv" ] ; '
         f'then touch "{output_dir}/alphafold3.done"; fi'
     )
+    email_quoted = shlex.quote(data.get("email", ""))
     email_notification_cmd = (
-        f'if [ ! -z "{data["email"]}" ]; '
+        f'if [ ! -z {email_quoted} ]; '
         f'echo "Sending email notification to {data["email"]}"; '
         f'then if [ -s "{output_dir}/{sanitised_name}/{sanitised_name}_ranking_scores.csv" ] ; '
         f'then echo -e "To:{data["email"]}\nFrom:{Config.EMAIL_FROM}\n'

@@ -81,7 +81,9 @@ def test_validate_email(app):
     # Valid cases
     assert validate_email("example@e-infra.com") is None
     assert validate_email("user2654@mail.muni.cz") is None
-    
+    assert validate_email("first.last@sub.domain.org") is None
+    assert validate_email("user_name@domain.co.uk") is None
+
     # Invalid cases
     response, status_code = validate_email("example.com")  # Missing '@'
     assert status_code == 400
@@ -94,4 +96,41 @@ def test_validate_email(app):
     response, status_code = validate_email("example@muni")  # Missing domain
     assert status_code == 400
     assert "Invalid email address" in response.json["error"]
-    
+
+    # Command injection payloads must be rejected
+    response, status_code = validate_email('email@example.com$(echo ahoj > /storage/hehe.txt)')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email('email@example.com`whoami`')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email('email@example.com; rm -rf /')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email('email@example.com|cat /etc/passwd')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email('email@example.com && ls')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email('email@example.com < /etc/passwd')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email('email@example.com > /tmp/out')
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email(123)  # Non-string
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
+    response, status_code = validate_email("a" * 250 + "@test.com")  # Too long (>254)
+    assert status_code == 400
+    assert "Invalid email address" in response.json["error"]
+
