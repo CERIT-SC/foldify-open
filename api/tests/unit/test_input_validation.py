@@ -134,3 +134,40 @@ def test_validate_email(app):
     assert status_code == 400
     assert "Invalid email address" in response.json["error"]
 
+
+def test_validate_job_name_path_traversal(app):
+    """Test that path traversal payloads are rejected by validate_job_name."""
+    traversal_names = [
+        "../etc/passwd",
+        "..",
+        "foo/../bar",
+        "foo/bar",
+        "foo\\bar",
+        "foo; rm -rf /",
+        "foo|cat /etc/passwd",
+        "foo$(whoami)",
+        "foo`whoami`",
+    ]
+    for name in traversal_names:
+        result = validate_job_name(name)
+        assert result is not None, f"Expected rejection for job name: {name!r}"
+        response, status_code = result
+        assert status_code == 400
+        assert "Job name must consist" in response.json["error"]
+
+
+def test_get_input_path_rejects_traversal(app, tmp_path):
+    """Test that get_input_path raises ValueError when path traversal is attempted."""
+    from app.shared.common import get_input_path
+    with patch("app.shared.common.get_working_directory", return_value=str(tmp_path)):
+        with pytest.raises(ValueError, match="path traversal detected"):
+            get_input_path("../../../etc/passwd", "json", "user1")
+
+
+def test_get_output_path_rejects_traversal(app, tmp_path):
+    """Test that get_output_path raises ValueError when path traversal is attempted."""
+    from app.shared.common import get_output_path
+    with patch("app.shared.common.get_working_directory", return_value=str(tmp_path)):
+        with pytest.raises(ValueError, match="path traversal detected"):
+            get_output_path("../../../etc/passwd", "user1")
+

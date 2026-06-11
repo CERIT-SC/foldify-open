@@ -106,11 +106,13 @@ def create_job_object(data, user):
     """Create a Kubernetes job object from the input data."""
 
     salt=''.join(random.choice(string.ascii_letters + string.digits) for i in range(64))
-    output_dir = f"/mnt/output/{user}/{data['name']}"
-    input_json = f"/mnt/input/{user}/{data['name']}.json"
+    name_quoted = shlex.quote(data['name'])
+    user_quoted = shlex.quote(user)
+    output_dir = f"/mnt/output/{user_quoted}/{name_quoted}"
+    input_json = f"/mnt/input/{user_quoted}/{name_quoted}.json"
     stdout_log = f"{output_dir}/stdout"
     use_precomputed = data.get("precomputedMSA") or "precomputedTemplates" in data
-    sanitised_name = data["name"].lower()
+    sanitised_name = shlex.quote(data["name"].lower())
 
     mkdir_cmd = f"mkdir -p {output_dir}"
     if use_precomputed:
@@ -129,17 +131,17 @@ def create_job_object(data, user):
     )
     public_symlink_cmd = (
         f'if [ "{data["public"]}" == "True" ] ; '
-        f'then ln -sfr {output_dir} /mnt/output/public/{data["name"]} ; fi'
+        f'then ln -sfr {output_dir} /mnt/output/public/{name_quoted} ; fi'
     )
     readme_cmd = (
         f'if [ -f "{Config.README_ALPHAFOLD3}" ]; then '
         f'cp "{Config.README_ALPHAFOLD3}" {output_dir}/README.md; fi'
     )
     compression_cmd = (
-        f'cd /mnt/output/{user} ; '
-        f'cp -r {data["name"]} /storage; '
-        f'zip -0 -r {data["name"]}.zip {data["name"]}; '
-        f'mv {data["name"]}.zip {data["name"]}/download-{salt}.zip'
+        f'cd /mnt/output/{user_quoted} ; '
+        f'cp -r {name_quoted} /storage; '
+        f'zip -0 -r {name_quoted}.zip {name_quoted}; '
+        f'mv {name_quoted}.zip {name_quoted}/download-{salt}.zip'
     )
     create_done_file_cmd = (
         f'if [ -s "{output_dir}/{sanitised_name}/{sanitised_name}_ranking_scores.csv" ] ; '
@@ -148,16 +150,16 @@ def create_job_object(data, user):
     email_quoted = shlex.quote(data.get("email", ""))
     email_notification_cmd = (
         f'if [ ! -z {email_quoted} ]; '
-        f'echo "Sending email notification to {data["email"]}"; '
+        f'echo "Sending email notification to {email_quoted}"; '
         f'then if [ -s "{output_dir}/{sanitised_name}/{sanitised_name}_ranking_scores.csv" ] ; '
-        f'then echo -e "To:{data["email"]}\nFrom:{Config.EMAIL_FROM}\n'
-        f'Subject:AlphaFold 3 computation has finished successfully\n\n'
-        f'Your AlphaFold 3 computation \"{data["name"]}\" has finished, please visit {Config.BASE_URL}/result/{data["name"]} to view or download the result of your computation.\n" | ssmtp -t; '
+        f'then echo -e "To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
+        f'Subject:AlphaFold 3 computation has finished successfully\\n\\n'
+        f'Your AlphaFold 3 computation {name_quoted} has finished, please visit {shlex.quote(Config.BASE_URL)}/result/{name_quoted} to view or download the result of your computation.\\n" | ssmtp -t; '
         f'else echo -e '
-        f'"To:{data["email"]}\nFrom:{Config.EMAIL_FROM}\n'
-        f'Subject:AlphaFold 3 computation has failed\n\n'
-        f'Your AlphaFold 3 computation \"{data["name"]}\" has failed.\n" '
-        f'| cat - /mnt/output/{user}/{data["name"]}/stdout | ssmtp -t; exit 1; '
+        f'"To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
+        f'Subject:AlphaFold 3 computation has failed\\n\\n'
+        f'Your AlphaFold 3 computation {name_quoted} has failed.\\n" '
+        f'| cat - /mnt/output/{user_quoted}/{name_quoted}/stdout | ssmtp -t; exit 1; '
         f' fi; fi'
     )
     
@@ -343,6 +345,10 @@ def save_json_input(json_file, computation_config, user):
 
 def save_ccd_file(file, job_name, user):
     """Save the CCD file to the server."""
+    from app.shared.input_validation import validate_job_name
+    validation_error = validate_job_name(job_name)
+    if validation_error:
+        return validation_error
     if file:
         ccd_path = get_input_path(job_name+"-ccd", "cif", user)
         logging.info(f"Saving CCD file to {ccd_path}")

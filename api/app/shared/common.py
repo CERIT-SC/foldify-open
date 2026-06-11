@@ -28,7 +28,7 @@ def get_input_dir(user="public"):
 
 def get_input_path(job, file_type, user="public"):
     """
-    Return the path to the input directory. Based on the given user parameter, 
+    Return the path to the input directory. Based on the given user parameter,
     it returns the path to the public or user's directory and the appropriate .fasta or .json file.
     
     Parameters:
@@ -47,6 +47,10 @@ def get_input_path(job, file_type, user="public"):
 
     # Construct the full path
     file_path = os.path.join(base_dir, "input", user, f"{job}.{file_type}")
+    file_path = os.path.abspath(file_path)
+    expected_prefix = os.path.abspath(os.path.join(base_dir, "input", user)) + os.sep
+    if not file_path.startswith(expected_prefix):
+        raise ValueError("Invalid job name: path traversal detected.")
 
     return file_path
 
@@ -56,7 +60,7 @@ def get_output_path(job_name, user="public"):
     base_dir = get_working_directory()
 
     """
-    Return the path to the output directory. Based on the given user parameter, 
+    Return the path to the output directory. Based on the given user parameter,
     it returns the path to the public or user's directory, optionally including the job name.
     
     Parameters:
@@ -69,7 +73,12 @@ def get_output_path(job_name, user="public"):
     base_dir = get_working_directory()
 
     # Return the path to the specific job's output directory
-    return os.path.join(base_dir, "output", user, job_name)
+    output_path = os.path.join(base_dir, "output", user, job_name)
+    output_path = os.path.abspath(output_path)
+    expected_prefix = os.path.abspath(os.path.join(base_dir, "output", user)) + os.sep
+    if not output_path.startswith(expected_prefix):
+        raise ValueError("Invalid job name: path traversal detected.")
+    return output_path
 
 
 def get_user_jobs(user):
