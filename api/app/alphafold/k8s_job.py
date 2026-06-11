@@ -23,7 +23,7 @@ def construct_command(jobConfig, user):
     # Construct the command for running Alphafold and handling the output
     mkdir_cmd = f'mkdir -p {output_dir}'
     alphafold_cmd = (
-        f'/app/alphafold/run_alphafold.py '
+        f'python /app/alphafold/run_alphafold.py '
         f'--fasta_paths={jobConfig["input"]} '
         f'--uniref90_database_path={jobConfig["uniref90"]} '
         f'--mgnify_database_path={jobConfig["mgnify"]} '
@@ -40,7 +40,7 @@ def construct_command(jobConfig, user):
         f'--benchmark=False '
         f'--use_precomputed_msas={jobConfig["reuseMSAs"]} '
         f'--num_multimer_predictions_per_model={jobConfig["predictionsPerModel"]} '
-        f'--run_relax={jobConfig["runRelax"]} '
+        f'--models_to_relax={"all" if jobConfig["runRelax"] else "none"} '
         f'--use_gpu_relax=True '
         f'--logtostderr 2>&1 | tee {output_dir}/stdout'
     )
@@ -125,15 +125,16 @@ def create_alphafold2_k8s_config(jobConfig, user):
                             volume_mounts=[client.V1VolumeMount(name="vol-1", mount_path="/data"),
                                             client.V1VolumeMount(name="vol-2", mount_path="/mnt"),
                                             client.V1VolumeMount(name="dshm", mount_path="/dev/shm"),
-                                            client.V1VolumeMount(name="storage", mount_path="/storage")
+                                            client.V1VolumeMount(name="storage", mount_path="/storage"),
+                                            client.V1VolumeMount(name="ssmtp-config", mount_path="/etc/ssmtp", read_only=True)
                                             ],
                         )
                     ],
                     volumes=[client.V1Volume(name="vol-1", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_VOL1_ALPHAFOLD)),
                              client.V1Volume(name="vol-2", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_VOL2)),
                              client.V1Volume(name="dshm", empty_dir=client.V1EmptyDirVolumeSource(medium="Memory", size_limit="1Gi")),
-                             client.V1Volume(name="storage", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_STORAGE))
-                             ],
+                             client.V1Volume(name="storage", persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(claim_name=Config.PVC_STORAGE)),
+                             client.V1Volume(name="ssmtp-config", secret=client.V1SecretVolumeSource(secret_name=Config.SSMTP_SECRET, items=[client.V1KeyToPath(key="ssmtp.conf", path="ssmtp.conf")]))],
                 )
             )
         )
