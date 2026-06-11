@@ -1,0 +1,20 @@
+FROM nvcr.io/nvidia/pytorch:22.03-py3 
+
+RUN apt-get update \
+    && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        zip \
+        ssmtp \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get autoremove -y \
+    && apt-get clean
+
+RUN pip install "fair-esm[esmfold]" \
+    'dllogger @ git+https://github.com/NVIDIA/dllogger.git@v1.1.0' \
+    'openfold @ git+https://github.com/aqlaboratory/openfold.git@4b41059694619831a7db195b7e0988fc4ff3a307' \
+    pytorch_lightning==1.5.10 \
+    && rm -rf ~/.cache 
+
+RUN echo "#!/opt/conda/bin/python3" > /usr/bin/esm-fold && \
+    wget https://raw.githubusercontent.com/facebookresearch/esm/main/scripts/fold.py -O - >> /usr/bin/esm-fold && chmod a+rx /usr/bin/esm-fold
+
+RUN useradd -l -m -s /bin/bash -N -u 1000 jovyan

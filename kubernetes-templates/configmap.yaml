@@ -25,3 +25,5 @@ data:
 
     # Results Directory
     PROD_RESULTS_DIRECTORY: "/path/to/results" # change this to your actual results directory path
+
+    SSMTP_SECRET: "foldify-ssmtp-secret"
