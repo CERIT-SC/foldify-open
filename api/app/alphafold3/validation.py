@@ -5,6 +5,9 @@ import re
 import json
 import logging
 
+# strict email regex
+_EMAIL_RE = re.compile(r"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+
 # Define TypedDict for each sequence variant
 class ProteinDict(TypedDict):
     protein: "Protein"
@@ -72,9 +75,9 @@ class Job(BaseModel):
 
     @validator("email")
     def validate_email_af3(cls, v):
-        if "@" not in v:
+        if not isinstance(v, str) or len(v) > 254:
             raise ValueError("Invalid email format")
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", v):
+        if not _EMAIL_RE.match(v):
             raise ValueError("Invalid email format")
         return v
 

@@ -1,4 +1,5 @@
 from kubernetes import client
+import shlex
 
 from app.shared.job_submitting import generate_salt
 from config import Config
@@ -16,7 +17,9 @@ def set_db_paths(modelPreset, jobConfig):
     return db_paths_cmd
 
 def construct_command(jobConfig, user):
-    output_dir = f'/mnt/output/{user}/{jobConfig["simplename"]}'
+    simplename_quoted = shlex.quote(jobConfig["simplename"])
+    user_quoted = shlex.quote(user)
+    output_dir = f'/mnt/output/{user_quoted}/{simplename_quoted}'
     db_paths_cmd = set_db_paths(jobConfig["modelPreset"], jobConfig)
     salt = generate_salt()
 
@@ -24,54 +27,55 @@ def construct_command(jobConfig, user):
     mkdir_cmd = f'mkdir -p {output_dir}'
     alphafold_cmd = (
         f'python /app/alphafold/run_alphafold.py '
-        f'--fasta_paths={jobConfig["input"]} '
-        f'--uniref90_database_path={jobConfig["uniref90"]} '
-        f'--mgnify_database_path={jobConfig["mgnify"]} '
-        f'--data_dir={jobConfig["data"]} '
-        f'--template_mmcif_dir={jobConfig["mmcif"]} '
-        f'--obsolete_pdbs_path={jobConfig["obsolete"]} '
+        f'--fasta_paths={shlex.quote(jobConfig["input"])} '
+        f'--uniref90_database_path={shlex.quote(jobConfig["uniref90"])} '
+        f'--mgnify_database_path={shlex.quote(jobConfig["mgnify"])} '
+        f'--data_dir={shlex.quote(jobConfig["data"])} '
+        f'--template_mmcif_dir={shlex.quote(jobConfig["mmcif"])} '
+        f'--obsolete_pdbs_path={shlex.quote(jobConfig["obsolete"])} '
         f'{db_paths_cmd}'
         f'{jobConfig["uniclust"]} {jobConfig["full"]} '
-        f'--output_dir=/mnt/output/{user} '
-        f'--max_template_date={jobConfig["maxTemplateDate"]} '
-        f'--db_preset={jobConfig["dbPreset"]} '
+        f'--output_dir=/mnt/output/{user_quoted} '
+        f'--max_template_date={shlex.quote(jobConfig["maxTemplateDate"])} '
+        f'--db_preset={shlex.quote(jobConfig["dbPreset"])} '
         f'{jobConfig["reduced"]} '
-        f'--model_preset={jobConfig["modelPreset"]} '
+        f'--model_preset={shlex.quote(jobConfig["modelPreset"])} '
         f'--benchmark=False '
-        f'--use_precomputed_msas={jobConfig["reuseMSAs"]} '
-        f'--num_multimer_predictions_per_model={jobConfig["predictionsPerModel"]} '
+        f'--use_precomputed_msas={shlex.quote(jobConfig["reuseMSAs"])} '
+        f'--num_multimer_predictions_per_model={shlex.quote(jobConfig["predictionsPerModel"])} '
         f'--models_to_relax={"all" if jobConfig["runRelax"] else "none"} '
         f'--use_gpu_relax=True '
         f'--logtostderr 2>&1 | tee {output_dir}/stdout'
     )
     public_symlink_cmd = (
         f'if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; '
-        f'then ln -sfr {output_dir} /mnt/output/public/{jobConfig["simplename"]} ; fi'
+        f'then ln -sfr {output_dir} /mnt/output/public/{simplename_quoted} ; fi'
     )
     readme_cmd = (
         f'if [ -f "{Config.README_ALPHAFOLD2}" ]; then '
         f'cp "{Config.README_ALPHAFOLD2}" {output_dir}/README.md; fi'
     )
     compression_cmd = (
-        f'cd /mnt/output/{user}; '
-        f'cp -r {jobConfig["simplename"]} /storage; '
-        f'zip -0 -r {jobConfig["simplename"]}.zip {jobConfig["simplename"]}; '
-        f'mv {jobConfig["simplename"]}.zip {jobConfig["simplename"]}/download-{salt}.zip'
+        f'cd /mnt/output/{user_quoted}; '
+        f'cp -r {simplename_quoted} /storage; '
+        f'zip -0 -r {simplename_quoted}.zip {simplename_quoted}; '
+        f'mv {simplename_quoted}.zip {simplename_quoted}/download-{salt}.zip'
     )
     create_done_file_cmd = (
         f'if [ -s "{output_dir}/ranking_debug.json" ] ; '
         f'then touch "{output_dir}/alphafold.done"; fi'
     )
+    email_quoted = shlex.quote(jobConfig.get("email", ""))
     email_notification_cmd = (
-        f'if [ ! -z "{jobConfig["email"]}" ]; '
+        f'if [ ! -z {email_quoted} ]; '
         f'then if [ -s "{output_dir}/ranking_debug.json" ] ; '
-        f'then echo -e "To:{jobConfig["email"]}\nFrom:{Config.EMAIL_FROM}\n'
-        f'Subject:Alphafold computation has finished\n\n'
-        f'Your AlphaFold computation \"{jobConfig["simplename"]}\" has finished, please visit {Config.BASE_URL}/result/{jobConfig["simplename"]} to view the result of your computation\n" | ssmtp -t; '
+        f'then echo -e "To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
+        f'Subject:Alphafold computation has finished\\n\\n'
+        f'Your AlphaFold computation {simplename_quoted} has finished, please visit {shlex.quote(Config.BASE_URL)}/result/{simplename_quoted} to view the result of your computation\\n" | ssmtp -t; '
         f'else echo -e '
-        f'"To:{jobConfig["email"]}\nFrom:{Config.EMAIL_FROM}\n'
-        f'Subject:Alphafold computation has failed\n\n'
-        f'Your alphafold computation \"{jobConfig["simplename"]}\" has failed.\n" '
+        f'"To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
+        f'Subject:Alphafold computation has failed\\n\\n'
+        f'Your alphafold computation {simplename_quoted} has failed.\\n" '
         f'| cat - {output_dir}/stdout | ssmtp -t; exit 1; '
         f' fi; fi'
     )

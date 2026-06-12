@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from app.alphafold3.validation import Job
 from app.alphafold3.v1_submission import save_input_config, run_alphafold3_prediction, save_json_input, save_ccd_file
 from app.shared.job_submitting import check_running_jobs_limit
+from app.shared.input_validation import validate_email
 import logging
 
 
@@ -70,6 +71,10 @@ def submit_af3_job_json(current_user):
         
         computation_config = json.loads(request.form["data"])
         json_file = request.files.get("jsonFile")
+
+        email_err = validate_email(computation_config.get("email", ""))
+        if email_err:
+            return email_err
 
         save_json = save_json_input(json_file, computation_config, current_user)
         if save_json:
