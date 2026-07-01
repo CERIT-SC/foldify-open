@@ -41,7 +41,7 @@ def construct_command(jobConfig, user):
         f'{jobConfig["reduced"]} '
         f'--model_preset={shlex.quote(jobConfig["modelPreset"])} '
         f'--benchmark=False '
-        f'--use_precomputed_msas={shlex.quote(jobConfig["reuseMSAs"])} '
+        f'--use_precomputed_msas={jobConfig["reuseMSAs"]} '
         f'--num_multimer_predictions_per_model={shlex.quote(jobConfig["predictionsPerModel"])} '
         f'--models_to_relax={"all" if jobConfig["runRelax"] else "none"} '
         f'--use_gpu_relax=True '

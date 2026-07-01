@@ -61,7 +61,7 @@ def submit_job(current_user):
         if input_files_error:
             return input_files_error
         
-        return jsonify({"message": f'Job "{jobConfig["simplename"]}" created successfully.'}), 200
+        return jsonify({"message": f'Job "{jobConfig["simplename"]}" for OmegaFold created successfully.'}), 200
       
     except KeyError as e:
         return jsonify({"error": f"Missing key: {str(e)}"}), 400

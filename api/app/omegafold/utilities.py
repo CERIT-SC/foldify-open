@@ -1,3 +1,4 @@
+import logging
 import random
 import shlex
 import string
@@ -88,7 +89,7 @@ def create_job_config(data, user):
         "container": Config.OMEGAFOLD_IMAGE,
         "nodeselector": "",
     }
-    if data["proteinSequence"].find(":"):
+    if ":" in data["proteinSequence"]:
         seqs = data["proteinSequence"].split(":")
         lengths = [len(s) for s in seqs]
         jobConfig["subbatchSize"] = get_subbatch_size(sum(lengths))
@@ -116,13 +117,19 @@ def create_file_config(jobConfig):
 
 def create_job_object(jobConfig, user):
     """Create Kubernetes Job Object."""
-    salt = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(64))
-    email_quoted = shlex.quote(jobConfig.get("email", ""))
-    output_dir_quoted = shlex.quote(jobConfig["outputDir"])
-    user_quoted = shlex.quote(user)
-    ofArgs = f'mkdir -p /mnt/output/{user_quoted}/{output_dir_quoted} && /usr/local/bin/omegafold {shlex.quote(jobConfig["input"])} /mnt/output/{user_quoted}/{output_dir_quoted} --num_cycle {shlex.quote(jobConfig["numCycle"])} --subbatch_size {shlex.quote(jobConfig["subbatchSize"])}  --weights_file {shlex.quote(jobConfig["weights_file"])} --pseudo_msa_mask_rate {shlex.quote(jobConfig["pseudoMsaMask"])} --num_pseudo_msa {shlex.quote(jobConfig["numPseudoMSAs"])} 2>&1 | tee /mnt/output/{user_quoted}/{output_dir_quoted}/stdout && if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; then ln -sfr /mnt/output/{user_quoted}/{output_dir_quoted} /mnt/output/public/{output_dir_quoted} ; fi ; if [ -f "{Config.README_OMEGAFOLD}" ]; then cp "{Config.README_OMEGAFOLD}" /mnt/output/{user_quoted}/{output_dir_quoted}/README.md; fi ; cd /mnt/output/{user_quoted} ; cp -r {output_dir_quoted} /storage ; zip -0 -r {output_dir_quoted}.zip {output_dir_quoted}; mv {output_dir_quoted}.zip {output_dir_quoted}/download-{salt}.zip ; if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then touch "/mnt/output/{user_quoted}/{output_dir_quoted}/omegafold.done"; fi; if [ ! -z {email_quoted} ]; then if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then echo -e "To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\nSubject:OmegaFold computation has finished\\n\\nYour OmegaFold computation {shlex.quote(jobConfig["simplename"])} has finished, please visit {shlex.quote(Config.BASE_URL)}/result/{shlex.quote(jobConfig["simplename"])} to view the result of your computation\\n" | ssmtp -t; else echo -e "To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\nSubject:Omegafold computation has failed\\n\\nYour omegafold computation {shlex.quote(jobConfig["simplename"])} has failed.\\n" | cat - /mnt/output/{user_quoted}/{output_dir_quoted}/stdout | ssmtp -t;  fi; fi'
+    try:
+        def shell_quote(value):
+            return shlex.quote("" if value is None else str(value))
 
-    job = client.V1Job(
+        salt = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(64))
+        email_quoted = shell_quote(jobConfig.get("email", ""))
+        output_dir_quoted = shell_quote(jobConfig["outputDir"])
+        user_quoted = shell_quote(user)
+        ofArgs = f'mkdir -p /mnt/output/{user_quoted}/{output_dir_quoted} && /usr/local/bin/omegafold {shell_quote(jobConfig["input"])} /mnt/output/{user_quoted}/{output_dir_quoted} --num_cycle {shell_quote(jobConfig["numCycle"])} --subbatch_size {shell_quote(jobConfig["subbatchSize"])}  --weights_file {shell_quote(jobConfig["weights_file"])} --pseudo_msa_mask_rate {shell_quote(jobConfig["pseudoMsaMask"])} --num_pseudo_msa {shell_quote(jobConfig["numPseudoMSAs"])} 2>&1 | tee /mnt/output/{user_quoted}/{output_dir_quoted}/stdout && if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; then ln -sfr /mnt/output/{user_quoted}/{output_dir_quoted} /mnt/output/public/{output_dir_quoted} ; fi ; if [ -f "{Config.README_OMEGAFOLD}" ]; then cp "{Config.README_OMEGAFOLD}" /mnt/output/{user_quoted}/{output_dir_quoted}/README.md; fi ; cd /mnt/output/{user_quoted} ; cp -r {output_dir_quoted} /storage ; zip -0 -r {output_dir_quoted}.zip {output_dir_quoted}; mv {output_dir_quoted}.zip {output_dir_quoted}/download-{salt}.zip ; if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then touch "/mnt/output/{user_quoted}/{output_dir_quoted}/omegafold.done"; fi; if [ ! -z {email_quoted} ]; then if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then echo -e "To:{email_quoted}\\nFrom:{shell_quote(Config.EMAIL_FROM)}\\nSubject:OmegaFold computation has finished\\n\\nYour OmegaFold computation {shell_quote(jobConfig["simplename"])} has finished, please visit {shell_quote(Config.BASE_URL)}/result/{shell_quote(jobConfig["simplename"])} to view the result of your computation\\n" | ssmtp -t; else echo -e "To:{email_quoted}\\nFrom:{shell_quote(Config.EMAIL_FROM)}\\nSubject:Omegafold computation has failed\\n\\nYour omegafold computation {shell_quote(jobConfig["simplename"])} has failed.\\n" | cat - /mnt/output/{user_quoted}/{output_dir_quoted}/stdout | ssmtp -t;  fi; fi'
+
+        logging.info(f"OmegaFold: qouted args: {ofArgs}")
+
+        job = client.V1Job(
         api_version="batch/v1",
         kind="Job",
         metadata=client.V1ObjectMeta(
@@ -198,5 +205,13 @@ def create_job_object(jobConfig, user):
             )
         )
     )
+    except KeyError:
+        logging.exception(
+            f"OmegaFold: Missing job configuration key while creating job object for user={user} job={jobConfig.get('simplename')} unique={jobConfig.get('uniquename')}")
+        raise
+    except Exception:
+        logging.exception(
+            f"OmegaFold: Unexpected failure while creating job object for user {user} job={jobConfig.get('simplename')} unique={jobConfig.get('uniquename')}")
+        raise
 
     return job
