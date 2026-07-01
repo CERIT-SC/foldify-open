@@ -43,3 +43,4 @@ class Config:
     README_ESMFOLD = os.path.join(README_BASE_PATH, "esmfold.md")
     README_OMEGAFOLD = os.path.join(README_BASE_PATH, "omegafold.md")
 
+    SSMTP_SECRET = os.getenv("SSMTP_SECRET")
