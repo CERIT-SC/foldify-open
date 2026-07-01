@@ -10,6 +10,7 @@ from app.shared.input_validation import (
     validate_sequence,
     validate_email)
 from app.shared.job_submitting import create_simple_name, generate_random_suffix
+from app.shared.email_notifications import success_email_cmd, failure_email_cmd
 from config import Config
 
 def split_sequence_input(sequence_input):
@@ -210,7 +211,19 @@ def create_job_object(jobConfig, user):
     email_quoted = shlex.quote(jobConfig.get("email", ""))
     simplename_quoted = shlex.quote(jobConfig["simplename"])
     user_quoted = shlex.quote(user)
-    cfArgs = f'mkdir -p /mnt/output/{user_quoted}/{simplename_quoted} && /opt/conda/bin/colabfold_batch {shlex.quote(jobConfig["input"])} /mnt/output/{user_quoted}/{simplename_quoted} --model-type {shlex.quote(jobConfig["modelPreset"])} --use-gpu-relax --num-relax {shlex.quote(str(jobConfig["numRelax"]))} {jobConfig["templateMode"]} --msa-mode {shlex.quote(jobConfig["msaMode"])} {jobConfig["maxMSA"]} --pair-mode {shlex.quote(jobConfig["pairMode"])} {jobConfig["useDropout"]} --recycle-early-stop-tolerance {shlex.quote(jobConfig["recycleTolerance"])} --num-recycle {shlex.quote(jobConfig["numRecycles"])} --num-models {shlex.quote(jobConfig["numModels"])} --num-seeds {shlex.quote(jobConfig["numSeeds"])} --host-url http://colabsearch.colabsearch-ns.svc.cluster.local 2>&1 | tee /mnt/output/{user_quoted}/{simplename_quoted}/stdout && if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; then ln -sfr /mnt/output/{user_quoted}/{simplename_quoted} /mnt/output/public/{simplename_quoted} ; fi ; if [ -f "{Config.README_COLABFOLD}" ]; then cp "{Config.README_COLABFOLD}" /mnt/output/{user_quoted}/{simplename_quoted}/README.md; fi ; cd /mnt/output/{user_quoted} ; cp -r {simplename_quoted} /storage ; zip -0 -r {simplename_quoted}.zip {simplename_quoted}; mv {simplename_quoted}.zip {simplename_quoted}/download-{salt}.zip ; cd "/mnt/output/{user_quoted}/{simplename_quoted}"; if ls *.done.txt ; then touch "/mnt/output/{user_quoted}/{simplename_quoted}/colabfold.done"; fi; if [ ! -z {email_quoted} ]; then cd "/mnt/output/{user_quoted}/{simplename_quoted}"; if ls *.done.txt ; then echo -e "To:{email_quoted}\nFrom:{shlex.quote(Config.EMAIL_FROM)}\nSubject:ColabFold computation has finished\n\nYour ColabFold computation {simplename_quoted} has finished, please visit {shlex.quote(Config.BASE_URL)}/result/{simplename_quoted} to view the result of your computation\n" | ssmtp -t; else echo -e "To:{email_quoted}\nFrom:{shlex.quote(Config.EMAIL_FROM)}\nSubject:Colabfold computation has failed\n\nYour ColabFold computation {simplename_quoted} has failed.\n" | cat - /mnt/output/{user_quoted}/{simplename_quoted}/stdout | ssmtp -t; fi; fi'
+    success_email = success_email_cmd(
+        email_quoted,
+        "ColabFold computation has finished",
+        f'Your ColabFold computation {simplename_quoted} has finished, please visit '
+        f'{shlex.quote(Config.BASE_URL)}/result/{simplename_quoted} to view the result of your computation'
+    )
+    failure_email = failure_email_cmd(
+        email_quoted,
+        "Colabfold computation has failed",
+        f'Your ColabFold computation {simplename_quoted} has failed.',
+        f'/mnt/output/{user_quoted}/{simplename_quoted}/stdout'
+    )
+    cfArgs = f'mkdir -p /mnt/output/{user_quoted}/{simplename_quoted} && /opt/conda/bin/colabfold_batch {shlex.quote(jobConfig["input"])} /mnt/output/{user_quoted}/{simplename_quoted} --model-type {shlex.quote(jobConfig["modelPreset"])} --use-gpu-relax --num-relax {shlex.quote(str(jobConfig["numRelax"]))} {jobConfig["templateMode"]} --msa-mode {shlex.quote(jobConfig["msaMode"])} {jobConfig["maxMSA"]} --pair-mode {shlex.quote(jobConfig["pairMode"])} {jobConfig["useDropout"]} --recycle-early-stop-tolerance {shlex.quote(jobConfig["recycleTolerance"])} --num-recycle {shlex.quote(jobConfig["numRecycles"])} --num-models {shlex.quote(jobConfig["numModels"])} --num-seeds {shlex.quote(jobConfig["numSeeds"])} --host-url http://colabsearch.colabsearch-ns.svc.cluster.local 2>&1 | tee /mnt/output/{user_quoted}/{simplename_quoted}/stdout && if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; then ln -sfr /mnt/output/{user_quoted}/{simplename_quoted} /mnt/output/public/{simplename_quoted} ; fi ; if [ -f "{Config.README_COLABFOLD}" ]; then cp "{Config.README_COLABFOLD}" /mnt/output/{user_quoted}/{simplename_quoted}/README.md; fi ; cd /mnt/output/{user_quoted} ; cp -r {simplename_quoted} /storage ; zip -0 -r {simplename_quoted}.zip {simplename_quoted}; mv {simplename_quoted}.zip {simplename_quoted}/download-{salt}.zip ; cd "/mnt/output/{user_quoted}/{simplename_quoted}"; if ls *.done.txt ; then touch "/mnt/output/{user_quoted}/{simplename_quoted}/colabfold.done"; fi; if [ ! -z {email_quoted} ]; then cd "/mnt/output/{user_quoted}/{simplename_quoted}"; if ls *.done.txt ; then {success_email}; else {failure_email}; fi; fi'
 
     if len(jobConfig['proteinSequence']) > 5000:
         logging.info(f"Large sequence detected ({len(jobConfig['proteinSequence'])} residues), allocating more resources.")

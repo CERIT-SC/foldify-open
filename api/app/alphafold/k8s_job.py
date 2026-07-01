@@ -2,6 +2,7 @@ from kubernetes import client
 import shlex
 
 from app.shared.job_submitting import generate_salt
+from app.shared.email_notifications import success_email_cmd, failure_email_cmd
 from config import Config
 
 def set_db_paths(modelPreset, jobConfig):
@@ -66,17 +67,23 @@ def construct_command(jobConfig, user):
         f'then touch "{output_dir}/alphafold.done"; fi'
     )
     email_quoted = shlex.quote(jobConfig.get("email", ""))
+    success_email = success_email_cmd(
+        email_quoted,
+        "Foldify: Alphafold computation has finished",
+        f'Your AlphaFold computation {simplename_quoted} has finished, please visit '
+        f'{shlex.quote(Config.BASE_URL)}/result/{simplename_quoted} to view the result of your computation.'
+    )
+    failure_email = failure_email_cmd(
+        email_quoted,
+        "Foldify: Alphafold computation has failed",
+        f'Your alphafold computation {simplename_quoted} has failed.',
+        f'{output_dir}/stdout'
+    )
     email_notification_cmd = (
         f'if [ ! -z {email_quoted} ]; '
         f'then if [ -s "{output_dir}/ranking_debug.json" ] ; '
-        f'then echo -e "To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
-        f'Subject:Alphafold computation has finished\\n\\n'
-        f'Your AlphaFold computation {simplename_quoted} has finished, please visit {shlex.quote(Config.BASE_URL)}/result/{simplename_quoted} to view the result of your computation\\n" | ssmtp -t; '
-        f'else echo -e '
-        f'"To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
-        f'Subject:Alphafold computation has failed\\n\\n'
-        f'Your alphafold computation {simplename_quoted} has failed.\\n" '
-        f'| cat - {output_dir}/stdout | ssmtp -t; exit 1; '
+        f'then {success_email}; '
+        f'else {failure_email}; exit 1; '
         f' fi; fi'
     )
     command = " && ".join([mkdir_cmd, alphafold_cmd, public_symlink_cmd, readme_cmd, compression_cmd, create_done_file_cmd, email_notification_cmd])

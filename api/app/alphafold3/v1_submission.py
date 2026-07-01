@@ -12,6 +12,7 @@ from app.shared.kubernetes import connect_to_k8s
 from app.shared.job_submitting import create_k8s_job
 from config import Config
 from app.shared.job_submitting import check_same_job_name
+from app.shared.email_notifications import success_email_cmd, failure_email_cmd
 import shutil
 from config import Config
 
@@ -148,18 +149,24 @@ def create_job_object(data, user):
         f'then touch "{output_dir}/alphafold3.done"; fi'
     )
     email_quoted = shlex.quote(data.get("email", ""))
+    success_email = success_email_cmd(
+        email_quoted,
+        "AlphaFold 3 computation has finished successfully",
+        f'Your AlphaFold 3 computation {name_quoted} has finished, please visit '
+        f'{shlex.quote(Config.BASE_URL)}/result/{name_quoted} to view or download the result of your computation.'
+    )
+    failure_email = failure_email_cmd(
+        email_quoted,
+        "AlphaFold 3 computation has failed",
+        f'Your AlphaFold 3 computation {name_quoted} has failed.',
+        f'/mnt/output/{user_quoted}/{name_quoted}/stdout'
+    )
     email_notification_cmd = (
         f'if [ ! -z {email_quoted} ]; '
         f'echo "Sending email notification to {email_quoted}"; '
         f'then if [ -s "{output_dir}/{sanitised_name}/{sanitised_name}_ranking_scores.csv" ] ; '
-        f'then echo -e "To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
-        f'Subject:AlphaFold 3 computation has finished successfully\\n\\n'
-        f'Your AlphaFold 3 computation {name_quoted} has finished, please visit {shlex.quote(Config.BASE_URL)}/result/{name_quoted} to view or download the result of your computation.\\n" | ssmtp -t; '
-        f'else echo -e '
-        f'"To:{email_quoted}\\nFrom:{shlex.quote(Config.EMAIL_FROM)}\\n'
-        f'Subject:AlphaFold 3 computation has failed\\n\\n'
-        f'Your AlphaFold 3 computation {name_quoted} has failed.\\n" '
-        f'| cat - /mnt/output/{user_quoted}/{name_quoted}/stdout | ssmtp -t; exit 1; '
+        f'then {success_email}; '
+        f'else {failure_email}; exit 1; '
         f' fi; fi'
     )
     

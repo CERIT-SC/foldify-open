@@ -11,6 +11,7 @@ from app.shared.input_validation import (
     validate_numeric_input,
     validate_email)
 from app.shared.job_submitting import generate_random_suffix, create_simple_name
+from app.shared.email_notifications import success_email_cmd, failure_email_cmd
 from config import Config
 
 
@@ -125,7 +126,19 @@ def create_job_object(jobConfig, user):
         email_quoted = shell_quote(jobConfig.get("email", ""))
         output_dir_quoted = shell_quote(jobConfig["outputDir"])
         user_quoted = shell_quote(user)
-        ofArgs = f'mkdir -p /mnt/output/{user_quoted}/{output_dir_quoted} && /usr/local/bin/omegafold {shell_quote(jobConfig["input"])} /mnt/output/{user_quoted}/{output_dir_quoted} --num_cycle {shell_quote(jobConfig["numCycle"])} --subbatch_size {shell_quote(jobConfig["subbatchSize"])}  --weights_file {shell_quote(jobConfig["weights_file"])} --pseudo_msa_mask_rate {shell_quote(jobConfig["pseudoMsaMask"])} --num_pseudo_msa {shell_quote(jobConfig["numPseudoMSAs"])} 2>&1 | tee /mnt/output/{user_quoted}/{output_dir_quoted}/stdout && if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; then ln -sfr /mnt/output/{user_quoted}/{output_dir_quoted} /mnt/output/public/{output_dir_quoted} ; fi ; if [ -f "{Config.README_OMEGAFOLD}" ]; then cp "{Config.README_OMEGAFOLD}" /mnt/output/{user_quoted}/{output_dir_quoted}/README.md; fi ; cd /mnt/output/{user_quoted} ; cp -r {output_dir_quoted} /storage ; zip -0 -r {output_dir_quoted}.zip {output_dir_quoted}; mv {output_dir_quoted}.zip {output_dir_quoted}/download-{salt}.zip ; if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then touch "/mnt/output/{user_quoted}/{output_dir_quoted}/omegafold.done"; fi; if [ ! -z {email_quoted} ]; then if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then echo -e "To:{email_quoted}\\nFrom:{shell_quote(Config.EMAIL_FROM)}\\nSubject:OmegaFold computation has finished\\n\\nYour OmegaFold computation {shell_quote(jobConfig["simplename"])} has finished, please visit {shell_quote(Config.BASE_URL)}/result/{shell_quote(jobConfig["simplename"])} to view the result of your computation\\n" | ssmtp -t; else echo -e "To:{email_quoted}\\nFrom:{shell_quote(Config.EMAIL_FROM)}\\nSubject:Omegafold computation has failed\\n\\nYour omegafold computation {shell_quote(jobConfig["simplename"])} has failed.\\n" | cat - /mnt/output/{user_quoted}/{output_dir_quoted}/stdout | ssmtp -t;  fi; fi'
+        success_email = success_email_cmd(
+            email_quoted,
+            "OmegaFold computation has finished",
+            f'Your OmegaFold computation {shell_quote(jobConfig["simplename"])} has finished, please visit '
+            f'{shell_quote(Config.BASE_URL)}/result/{shell_quote(jobConfig["simplename"])} to view the result of your computation'
+        )
+        failure_email = failure_email_cmd(
+            email_quoted,
+            "Omegafold computation has failed",
+            f'Your omegafold computation {shell_quote(jobConfig["simplename"])} has failed.',
+            f'/mnt/output/{user_quoted}/{output_dir_quoted}/stdout'
+        )
+        ofArgs = f'mkdir -p /mnt/output/{user_quoted}/{output_dir_quoted} && /usr/local/bin/omegafold {shell_quote(jobConfig["input"])} /mnt/output/{user_quoted}/{output_dir_quoted} --num_cycle {shell_quote(jobConfig["numCycle"])} --subbatch_size {shell_quote(jobConfig["subbatchSize"])}  --weights_file {shell_quote(jobConfig["weights_file"])} --pseudo_msa_mask_rate {shell_quote(jobConfig["pseudoMsaMask"])} --num_pseudo_msa {shell_quote(jobConfig["numPseudoMSAs"])} 2>&1 | tee /mnt/output/{user_quoted}/{output_dir_quoted}/stdout && if [ "{jobConfig["makeResultsPublic"]}" == "true" ] ; then ln -sfr /mnt/output/{user_quoted}/{output_dir_quoted} /mnt/output/public/{output_dir_quoted} ; fi ; if [ -f "{Config.README_OMEGAFOLD}" ]; then cp "{Config.README_OMEGAFOLD}" /mnt/output/{user_quoted}/{output_dir_quoted}/README.md; fi ; cd /mnt/output/{user_quoted} ; cp -r {output_dir_quoted} /storage ; zip -0 -r {output_dir_quoted}.zip {output_dir_quoted}; mv {output_dir_quoted}.zip {output_dir_quoted}/download-{salt}.zip ; if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then touch "/mnt/output/{user_quoted}/{output_dir_quoted}/omegafold.done"; fi; if [ ! -z {email_quoted} ]; then if [ -s "/mnt/output/{user_quoted}/{output_dir_quoted}/"*.pdb ] ; then {success_email}; else {failure_email}; fi; fi'
 
         logging.info(f"OmegaFold: qouted args: {ofArgs}")
 
