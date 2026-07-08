@@ -20,7 +20,7 @@ const EXAMPLE_CONFIGS = [
         description:
             "Non-selective voltage-gated ion channel that mediates the transport of anions and cations through the mitochondrion outer membrane and plasma membrane (PubMed:8420959).",
         tool: "MultiModel",
-        jobName: "multi/MULTIMODEL-porin-MULTIMODEL-porin-MULTIMODEL-porin-MULTIMODEL-porin-MULTIMODEL-porin-AF2",
+        jobName: "multi/MULTIMODEL-porin-AF3_MULTIMODEL-porin-EMF_MULTIMODEL-porin-CBF_MULTIMODEL-porin-OMF_MULTIMODEL-porin-AF2",
         data: porinExampleData.models,
         format: "multiple",
     },
@@ -30,7 +30,7 @@ const EXAMPLE_CONFIGS = [
             "The example of 746 residues demonstrates the large protein complex prediction using MultiModel Submission. Predictions over 600 tokens are available in the full Foldify version at **[https://foldify.cloud.e-infra.cz](https://foldify.cloud.e-infra.cz)**.",
         tool: "MultiModel",
         jobName:
-            "multi/MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-CBF",
+            "multi/MULTIMODEL-dipeptidylpeptidase-AF3_MULTIMODEL-dipeptidylpeptidase-AF2_MULTIMODEL-dipeptidylpeptidase-OMF_MULTIMODEL-dipeptidylpeptidase-EMF_MULTIMODEL-dipeptidylpeptidase-CBF",
         data: dipeptExampleData.models,
         format: "multiple",
     },
