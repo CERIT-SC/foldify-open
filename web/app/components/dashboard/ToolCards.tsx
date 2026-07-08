@@ -13,8 +13,8 @@ export default function ToolCards({}) {
                 </div>
                 <div className="max-w-3xl mx-auto">
                     <p className="text-base text-base-content/80 mx-auto leading-relaxed">
-                        Select a tool to predict protein or molecule structures. New to this? Try <strong>AlphaFold 2</strong> for reliable results,
-                        or <strong>MultiModel Submission</strong> to compare multiple prediction tools.
+                        Select a tool to predict protein or molecule structures. New to this? Start with <strong>MultiModel Submission</strong> and
+                        compare multiple prediction tools.
                     </p>
                 </div>
             </div>

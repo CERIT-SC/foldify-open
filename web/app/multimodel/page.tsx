@@ -148,6 +148,7 @@ export default function MultiModel() {
                     <p className="text-md text-base-content/70 max-w-3xl mx-auto leading-relaxed">
                         Compare multiple protein structure prediction tools. Select at least 2 tools to run parallel predictions and compare results.
                     </p>
+                    <span className="text-xs text-base-content/50">*previously named 'MultiFold' (as referenced in our JCIM paper)</span>
                 </div>
 
                 {/* Main Form */}
