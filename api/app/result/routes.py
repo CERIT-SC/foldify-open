@@ -3,7 +3,7 @@ from flask import jsonify, Blueprint
 
 from app.shared.job_info import job_done, get_start, get_service, get_publicity, set_publicity
 from app.shared.common import get_input_path, get_output_path, get_input_dir
-from app.result.utilities import load_json_data, read_file_content, create_molstar_url, get_plddt_data, get_model_path, get_output_files, get_input_files, get_aligned_multifold_structures, parse_af3_json
+from app.result.utilities import load_json_data, read_file_content, create_molstar_url, get_plddt_data, get_model_path, get_output_files, get_input_files, get_aligned_multimodel_structures, parse_af3_json
 from app.wrappers import token_required
 from app.shared.kubernetes import get_running_jobs
 
@@ -251,7 +251,7 @@ def get_multi_result(job_names, current_user):
     """Get the model data for multiple jobs."""
     job_list = job_names.split("_")
 
-    aligned_models = get_aligned_multifold_structures(job_list, current_user)
+    aligned_models = get_aligned_multimodel_structures(job_list, current_user)
     if not aligned_models:
         logging.error(f"Error aligning models for jobs: {job_names}")
         return jsonify({"error": f"Error aligning models for jobs: {job_names}"}), 404

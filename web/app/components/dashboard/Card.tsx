@@ -11,7 +11,7 @@ interface CardProps {
 export default function Card({ title, image, link, badgeString }: CardProps) {
     return (
         <>
-            {title === "MultiFold" ?
+            {title === "MultiModel Submission" ?
                 <Link
                     href={link}
                     className="block h-full">
@@ -21,6 +21,7 @@ export default function Card({ title, image, link, badgeString }: CardProps) {
 
                             <h2 className="card-title font-bold text-2xl text-gray-100">{title}</h2>
                             <p className="text-gray-200 text-sm flex-grow">Compare multiple prediction tools</p>
+                            <span className="text-xs text-base-content/50">*previously named MultiFold</span>
                         </div>
                     </div>
                 </Link>
