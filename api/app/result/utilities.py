@@ -438,7 +438,7 @@ def format_file_size(size_bytes):
     except (ValueError, OverflowError):
         return f"{size_bytes} B"
     
-def get_aligned_multifold_structures(job_list, user):
+def get_aligned_multimodel_structures(job_list, user):
     models_data = {}
     for job_name in job_list:
         model_path = get_model_path(job_name, user)

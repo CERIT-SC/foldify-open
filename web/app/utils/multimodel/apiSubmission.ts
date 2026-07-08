@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export interface MultiFoldConfig {
+export interface MultiModelConfig {
     jobName: string;
     sequence: string;
     email: string;
@@ -67,7 +67,7 @@ const formatSequenceForTool = (sequence: string, jobName: string): string => {
     return sequence;
 };
 
-const submitAlphaFold2 = async (config: MultiFoldConfig, toolConfig: ToolConfig["alphafold2"]): Promise<SubmissionResult> => {
+const submitAlphaFold2 = async (config: MultiModelConfig, toolConfig: ToolConfig["alphafold2"]): Promise<SubmissionResult> => {
     try {
         const finalSequence = formatSequenceForTool(config.sequence, config.jobName);
 
@@ -103,7 +103,7 @@ const submitAlphaFold2 = async (config: MultiFoldConfig, toolConfig: ToolConfig[
     }
 };
 
-const submitAlphaFold3 = async (config: MultiFoldConfig, toolConfig: ToolConfig["alphafold3"]): Promise<SubmissionResult> => {
+const submitAlphaFold3 = async (config: MultiModelConfig, toolConfig: ToolConfig["alphafold3"]): Promise<SubmissionResult> => {
     let formData = new FormData();
     formData.append(
         "data",
@@ -128,7 +128,7 @@ const submitAlphaFold3 = async (config: MultiFoldConfig, toolConfig: ToolConfig[
         })
     );
 
-    console.log("Submitting to AlphaFold3 from Multifold with data:", formData);
+    console.log("Submitting to AlphaFold3 from MultiModel with data:", formData);
     try {
         const response = await axios.post("/api/flask/alphafold3/v1/submit", formData);
         return {
@@ -145,7 +145,7 @@ const submitAlphaFold3 = async (config: MultiFoldConfig, toolConfig: ToolConfig[
     }
 };
 
-const submitColabFold = async (config: MultiFoldConfig, toolConfig: ToolConfig["colabfold"]): Promise<SubmissionResult> => {
+const submitColabFold = async (config: MultiModelConfig, toolConfig: ToolConfig["colabfold"]): Promise<SubmissionResult> => {
     try {
         const finalSequence = formatSequenceForTool(config.sequence, config.jobName);
 
@@ -186,7 +186,7 @@ const submitColabFold = async (config: MultiFoldConfig, toolConfig: ToolConfig["
     }
 };
 
-const submitESMFold = async (config: MultiFoldConfig, toolConfig: ToolConfig["esmfold"]): Promise<SubmissionResult> => {
+const submitESMFold = async (config: MultiModelConfig, toolConfig: ToolConfig["esmfold"]): Promise<SubmissionResult> => {
     try {
         const finalSequence = formatSequenceForTool(config.sequence, config.jobName);
 
@@ -217,7 +217,7 @@ const submitESMFold = async (config: MultiFoldConfig, toolConfig: ToolConfig["es
     }
 };
 
-const submitOmegaFold = async (config: MultiFoldConfig, toolConfig: ToolConfig["omegafold"]): Promise<SubmissionResult> => {
+const submitOmegaFold = async (config: MultiModelConfig, toolConfig: ToolConfig["omegafold"]): Promise<SubmissionResult> => {
     try {
         const finalSequence = formatSequenceForTool(config.sequence, config.jobName);
 
@@ -249,9 +249,9 @@ const submitOmegaFold = async (config: MultiFoldConfig, toolConfig: ToolConfig["
     }
 };
 
-export const submitMultiFoldJobs = async (
+export const submitMultiModelJobs = async (
     selectedTools: string[],
-    config: MultiFoldConfig,
+    config: MultiModelConfig,
     toolConfigs: ToolConfig
 ): Promise<SubmissionResult[]> => {
     const results: SubmissionResult[] = [];

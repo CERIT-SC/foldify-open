@@ -19,18 +19,18 @@ const EXAMPLE_CONFIGS = [
         title: "Porin: Non-selective voltage-gated ion channel VDAC2",
         description:
             "Non-selective voltage-gated ion channel that mediates the transport of anions and cations through the mitochondrion outer membrane and plasma membrane (PubMed:8420959).",
-        tool: "Multifold",
-        jobName: "multi/MULTIFOLD-porin-AF3_MULTIFOLD-porin-EMF_MULTIFOLD-porin-CBF_MULTIFOLD-porin-OMF_MULTIFOLD-porin-AF2",
+        tool: "MultiModel",
+        jobName: "multi/MULTIMODEL-porin-MULTIMODEL-porin-MULTIMODEL-porin-MULTIMODEL-porin-MULTIMODEL-porin-AF2",
         data: porinExampleData.models,
         format: "multiple",
     },
     {
         title: "Dipeptidylpeptidase IV, N-terminal domain",
         description:
-            "The example of 746 residues demonstrates the large protein complex prediction using Multifold. Predictions over 600 tokens are available in the full Foldify version at **[https://foldify.cloud.e-infra.cz](https://foldify.cloud.e-infra.cz)**.",
-        tool: "Multifold",
+            "The example of 746 residues demonstrates the large protein complex prediction using MultiModel Submission. Predictions over 600 tokens are available in the full Foldify version at **[https://foldify.cloud.e-infra.cz](https://foldify.cloud.e-infra.cz)**.",
+        tool: "MultiModel",
         jobName:
-            "multi/MULTIFOLD-dipeptidylpeptidase-AF3_MULTIFOLD-dipeptidylpeptidase-AF2_MULTIFOLD-dipeptidylpeptidase-OMF_MULTIFOLD-dipeptidylpeptidase-EMF_MULTIFOLD-dipeptidylpeptidase-CBF",
+            "multi/MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-MULTIMODEL-dipeptidylpeptidase-CBF",
         data: dipeptExampleData.models,
         format: "multiple",
     },

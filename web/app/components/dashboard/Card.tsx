@@ -11,7 +11,7 @@ interface CardProps {
 export default function Card({ title, image, link, badgeString }: CardProps) {
     return (
         <>
-            {title === "MultiFold" ?
+            {title === "MultiModel Submission" ?
                 <Link
                     href={link}
                     className="block h-full">

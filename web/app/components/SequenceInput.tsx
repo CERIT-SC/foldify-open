@@ -10,7 +10,7 @@ interface SequenceInputProps {
     warnings?: Record<string, string>;
     info?: string;
     jobName?: string;
-    isMultiFold?: boolean; // New prop to identify MultiFold usage
+    isMultiModel?: boolean;
 }
 
 const preprocessHint = (hint: string) => {
@@ -50,7 +50,7 @@ export default function SequenceInput({
     warnings,
     info,
     jobName = "sequence",
-    isMultiFold = false,
+    isMultiModel = false,
 }: SequenceInputProps) {
     const [inputMode, setInputMode] = useState<"amino" | "fasta">("amino");
     const formattedInfo = preprocessHint(info || "");
@@ -70,8 +70,8 @@ export default function SequenceInput({
     };
 
     const handleInputChange = (value: string) => {
-        if (isMultiFold) {
-            // For MultiFold, always store as amino acid sequence
+        if (isMultiModel) {
+            // For MultiModel, always store as amino acid sequence
             if (value.startsWith(">")) {
                 // If user pastes FASTA format, extract just the amino acid sequence
                 const aminoSequence = extractAminoSequence(value);
@@ -101,8 +101,7 @@ export default function SequenceInput({
 
     return (
         <fieldset className="fieldset w-full">
-            {/* Mode Toggle - Hide for MultiFold since it only accepts amino acid sequences */}
-            {!isMultiFold && (
+            {!isMultiModel && (
                 <div className="mb-4">
                     <div className="tabs tabs-boxed p-1 w-fit rounded-3xl shadow-lg">
                         <button

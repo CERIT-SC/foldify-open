@@ -14,7 +14,7 @@ export default function ToolCards({}) {
                 <div className="max-w-3xl mx-auto">
                     <p className="text-base text-base-content/80 mx-auto leading-relaxed">
                         Select a tool to predict protein or molecule structures. New to this? Try <strong>AlphaFold 2</strong> for reliable results,
-                        or <strong>MultiFold</strong> to compare multiple prediction tools.
+                        or <strong>MultiModel Submission</strong> to compare multiple prediction tools.
                     </p>
                 </div>
             </div>
@@ -22,8 +22,8 @@ export default function ToolCards({}) {
             {/* Responsive Grid for Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto">
                 <Card
-                    title="MultiFold"
-                    link="/multifold"
+                    title="MultiModel Submission"
+                    link="/multimodel"
                     badgeString="Compare Tools"
                 />
                 <Card

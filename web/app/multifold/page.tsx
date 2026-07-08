@@ -10,12 +10,12 @@ import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { JobNameInput } from "../components/JobNameInput";
 import SequenceInput from "../components/SequenceInput";
 import EmailInput from "../components/EmailInput";
-import PredictionToolSelector from "../components/multifold/PredictionToolSelector";
+import PredictionToolSelector from "../components/multimodel/PredictionToolSelector";
 import { BasicCheckBoxGroup } from "../components/BasicCheckboxGroup";
-import { submitMultiFoldJobs, getDefaultToolConfigs, MultiFoldConfig } from "../utils/multifold/apiSubmission";
+import { submitMultiModelJobs, getDefaultToolConfigs, MultiModelConfig } from "../utils/multimodel/apiSubmission";
 import { BackHomeButton } from "../components/BackHomeButton";
 
-export default function MultiFold() {
+export default function MultiModel() {
     const [jobName, setJobName] = useState<string>(generateSlug(2));
     const [email, setEmail] = useState<string>("");
     const [sequence, setSequence] = useState<string>(
@@ -42,8 +42,8 @@ export default function MultiFold() {
         setSubmitSuccessMessage("");
 
         if (isFormValid) {
-            const config: MultiFoldConfig = {
-                jobName: `MULTIFOLD-${jobName}`,
+            const config: MultiModelConfig = {
+                jobName: `MULTIMODEL-${jobName}`,
                 sequence,
                 email: email,
                 makeResultsPublic,
@@ -53,7 +53,7 @@ export default function MultiFold() {
             const toolConfigs = getDefaultToolConfigs();
 
             try {
-                const results = await submitMultiFoldJobs(selectedTools, config, toolConfigs);
+                const results = await submitMultiModelJobs(selectedTools, config, toolConfigs);
 
                 // Process results
                 const successfulSubmissions = results.filter((r) => r.success);
@@ -144,7 +144,7 @@ export default function MultiFold() {
 
                 {/* Page Header */}
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-primary mb-4">MultiFold</h1>
+                    <h1 className="text-4xl font-bold text-primary mb-4">MultiModel Submission</h1>
                     <p className="text-md text-base-content/70 max-w-3xl mx-auto leading-relaxed">
                         Compare multiple protein structure prediction tools. Select at least 2 tools to run parallel predictions and compare results.
                     </p>
@@ -177,7 +177,7 @@ export default function MultiFold() {
                                 {/* Show preview of final job name */}
                                 <div className="p-3 bg-white/50 rounded-3xl border">
                                     <span className="text-xs">Final job name: </span>
-                                    <span className="font-mono font-medium text-xs text-primary">MULTIFOLD-{jobName}</span>
+                                    <span className="font-mono font-medium text-xs text-primary">MULTIMODEL-{jobName}</span>
                                 </div>
                             </section>
 
@@ -194,7 +194,7 @@ export default function MultiFold() {
                                     placeholder={sequence}
                                     onChange={setSequence}
                                     errors={errors}
-                                    isMultiFold={true}
+                                    isMultiModel={true}
                                     info="Enter your amino acid sequence. The same sequence will be processed by all selected prediction tools for comparison."
                                 />
                             </section>

@@ -173,8 +173,8 @@ def check_job_uniqueness(jobConfig, fileConfig, user):
             return jsonify({
                 "error": f"Error deleting output files for {job_name}. Please contact us at k8s@ics.muni.cz. Error: {str(e)}"}), 500
 
-    if job_name.startswith("MULTIFOLD"):
-        logging.info(f'Job {job_name} is a MULTIFOLD job. Skipping sequence and settings uniqueness checks.')
+    if job_name.startswith("MULTIMODEL"):
+        logging.info(f'Job {job_name} is a MULTIMODEL job. Skipping sequence and settings uniqueness checks.')
         return None
 
     matching_sequence_jobs = check_same_job_sequence(sequence, user)

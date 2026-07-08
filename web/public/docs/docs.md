@@ -35,11 +35,11 @@ This section contains precomputed protein sequences that demostrate the use-case
 
 After choosing a tool, you will be redirected to the form page where you can fill in the parameters for the computation.
 
-### Multifold Submission
+### MultiModel Submission
 
-If you want to predict the same protein strucutre with multiple tools for comparison purposes, you can use the `Multifold` feature. To do so, choose the `Multifold` card in the dashboard.
-You will be redirected to the `Multifold Submission` form where you can enter the protein sequence (pure sequence, without FASTA header) and job name, and select the desired tools for computation. You can select any combination of the available tools: AlphaFold3, AlphaFold 2, ColabFold, OmegaFold and ESMFold.
-After filling in the parameters, click the `Submit Job` button to start the computation. The jobs will be created for each selected tool and you will be notified via email when the computations are finished. Each job name will contain "MULTIFOLD-" prefix to indicate that it was submitted via the Multifold feature.
+If you want to predict the same protein strucutre with multiple tools for comparison purposes, you can use the `MultiModel` feature. To do so, choose the `MultiModel Submission` card in the dashboard.
+You will be redirected to the `MultiModel Submission` form where you can enter the protein sequence (pure sequence, without FASTA header) and job name, and select the desired tools for computation. You can select any combination of the available tools: AlphaFold3, AlphaFold 2, ColabFold, OmegaFold and ESMFold.
+After filling in the parameters, click the `Submit Job` button to start the computation. The jobs will be created for each selected tool and you will be notified via email when the computations are finished. Each job name will contain "MULTIMODEL-" prefix to indicate that it was submitted via the MultiModel feature.
 
 ![multifoldform](/docs/multifold-form.png)
 
