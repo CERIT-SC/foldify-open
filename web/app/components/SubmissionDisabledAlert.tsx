@@ -12,9 +12,9 @@ export default function SubmissionDisabledAlert() {
     return (
         <div
             role="alert"
-            className="alert alert-error sticky top-0 z-50 w-full justify-center rounded-none border-x-0 border-t-0 px-4 py-3 text-sm text-left shadow-md">
+            className="alert alert-error sticky top-0 z-50 flex w-full flex-row items-center justify-center rounded-none border-x-0 border-t-0 px-4 py-3 text-left text-sm shadow-md">
             <ExclamationTriangleIcon className="h-6 w-6 shrink-0" />
-            <div className="w-full space-y-1">
+            <div className="max-w-7xl space-y-1">
                 <ReactMarkdown
                     components={{
                         a: ({ href, children }) => (
