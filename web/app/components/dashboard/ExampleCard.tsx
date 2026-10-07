@@ -16,7 +16,7 @@ export default function ExampleCard({title, description, tool, exampleData, jobN
     const specialTitle = "Dipeptidylpeptidase IV, N-terminal domain";
     const isSpecial = (title || "").trim() === specialTitle;
 
-    const articleClassName = `card relative bg-base-100 w-96 shadow-xl transition-transform duration-200 hover:scale-110 ${isSpecial ? 'border-2 border-primary' : ''}`;
+    const articleClassName = `card relative bg-base-100/50 w-full shadow-xl transition-transform duration-200 hover:scale-110 ${isSpecial ? 'border-2 border-primary' : ''}`;
 
     return (
         <article className={articleClassName}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { generateSlug } from "random-word-slugs";
 import axios from "axios";
 import AlertSuccess from "../components/SuccessAlertWindow";
@@ -33,20 +33,13 @@ export default function Alphafold() {
     const [submitErrorMessage, setSubmitErrorMessage] = useState<string>("");
     const [submitSuccessMessage, setSubmitSuccessMessage] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [errors, setErrors]: any = useState({});
-    const [warnings, setWarnings]: any = useState({});
-    const [isFormValid, setIsFormValid] = useState(false);
 
     const placeholder = `>Sequence1
 MDSSSETSPAAPLRTIPGSYGIPFLQPIKDRLEYFYGKGGRDEYFHSRLQ
 >Sequence2
 EPRHAQLKNLLFFMLKSSSDRVIPQFETTYTELFQGLETELAKNGKAKFNDVGEQAAFRFLGRAYFNSNPEETKLGTSAPTLISSWVLFNLGPILDLGLPWFLEELLLHT`;
 
-    useEffect(() => {
-        validateForm();
-    }, [jobName, proteinSequence, email, modelPreset]);
-
-    const validateForm = () => {
+    const { errors, warnings, isFormValid } = useMemo(() => {
         let errors: any = {};
         let warnings: any = {};
 
@@ -96,10 +89,8 @@ EPRHAQLKNLLFFMLKSSSDRVIPQFETTYTELFQGLETELAKNGKAKFNDVGEQAAFRFLGRAYFNSNPEETKLGTSAP
             errors.email = "Email is invalid.";
         }
 
-        setErrors(errors);
-        setWarnings(warnings);
-        setIsFormValid(Object.keys(errors).length === 0);
-    };
+        return { errors, warnings, isFormValid: Object.keys(errors).length === 0 };
+    }, [jobName, proteinSequence, email, modelPreset]);
 
     const runJob = () => {
         setIsLoading(true);

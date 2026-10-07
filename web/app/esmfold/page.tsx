@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import axios from "axios";
 import AlertSuccess from "../components/SuccessAlertWindow";
 import AlertError from "../components/ErrorAlertWindow";
@@ -74,15 +74,9 @@ export default function ESMfold() {
             });
     };
 
-    const [errors, setErrors]: any = useState({});
-    const [isFormValid, setIsFormValid] = useState(false);
-
-    useEffect(() => {
-        validateForm();
-    }, [jobName, proteinSequence, email]);
 
     // Validate form
-    const validateForm = () => {
+    const { errors, isFormValid } = useMemo(() => {
         let errors: any = {};
 
         if (!jobName) {
@@ -126,9 +120,8 @@ export default function ESMfold() {
             errors.email = "Email is invalid.";
         }
 
-        setErrors(errors);
-        setIsFormValid(Object.keys(errors).length === 0);
-    };
+        return { errors, isFormValid: Object.keys(errors).length === 0 };
+    }, [jobName, proteinSequence, email]);
 
     // Submit form
     const handleSubmit = () => {

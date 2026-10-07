@@ -1,26 +1,13 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export const useUserCCDValidation = (userCCDFile: File | null) => {
-    const [errorsCCD, setErrorsCCD]: any = useState({});
-    const [isFileValid, setIsFileValid] = useState<boolean>(false);
-
-    useEffect(() => {
-        validateUserCCDInput();
-    }, [userCCDFile]);
-
-    const validateUserCCDInput = () => {
+    return useMemo(() => {
         let errorsCCD: any = {};
 
-        const userCCDInput = document.getElementById("user_ccd_file_input") as HTMLInputElement;
-        const userCCDFileFromInput = userCCDInput?.files?.[0];
-
-        if (userCCDFileFromInput && !userCCDFileFromInput.name.endsWith(".cif")) {
+        if (userCCDFile && !userCCDFile.name.endsWith(".cif")) {
             errorsCCD.userCCDFile = "Please upload a .cif file.";
         }
 
-        setErrorsCCD(errorsCCD);
-        setIsFileValid(Object.keys(errorsCCD).length === 0);
-    };
-
-    return { errorsCCD, isFileValid };
+        return { errorsCCD, isFileValid: Object.keys(errorsCCD).length === 0 };
+    }, [userCCDFile]);
 };

@@ -63,21 +63,15 @@ export default function Result({ params }: { params: Promise<ResultPageParams> }
             console.log("Fetched sequence data:", data.sequence, "Type:", data.type);
             setSequence(data.sequence);
         });
-    }, []);
+    }, [fetchData]);
 
     // -------------------------- DOWNLOAD -------------------------------
-    const { downloadErrorMessage, checkDownloadAvailability, downloadAvailable, setDownloadAvailable } = useJobDownload();
+    const { downloadErrorMessage, checkDownloadAvailability } = useJobDownload();
 
     // Trigger download of the job results
     const downloadJob = (jobName: string) => {
         checkDownloadAvailability(jobName);
     };
-
-    useEffect(() => {
-        if (downloadAvailable) {
-            setDownloadAvailable(false);
-        }
-    }, [downloadAvailable]);
 
     useEffect(() => {
         if (downloadErrorMessage) {

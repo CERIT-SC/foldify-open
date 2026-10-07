@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import DeleteJobModal from "../components/DeleteJobModal";
 import DeleteMultiJobsModal from "@/app/components/DeleteMultiJobsModal";
@@ -22,17 +22,10 @@ interface Job {
 }
 
 export default function Dashboard() {
-    const [loadingTable, setLoadingTable] = useState<boolean>(false);
-
-    useEffect(() => {
-        loadJobTable();
-    }, []);
-
+    const [loadingTable, setLoadingTable] = useState<boolean>(true);
     const [jobs, setJobs] = useState<Job[]>([]);
 
-    const loadJobTable = () => {
-        setLoadingTable(true);
-
+    const fetchJobs = useCallback(() => {
         axios
             .get(`/api/flask/dashboard/user_jobs`)
             .then((response) => response.data)
@@ -44,20 +37,23 @@ export default function Dashboard() {
                 console.log(error);
                 setLoadingTable(false);
             });
+    }, []);
+
+    useEffect(() => {
+        fetchJobs();
+    }, [fetchJobs]);
+
+    const loadJobTable = () => {
+        setLoadingTable(true);
+        fetchJobs();
     };
 
     // -------------------------- DOWNLOAD -------------------------------
-    const { downloadErrorMessage, checkDownloadAvailability, downloadAvailable, setDownloadAvailable } = useJobDownload();
+    const { downloadErrorMessage, checkDownloadAvailability } = useJobDownload();
 
     const downloadJob = (jobName: string) => {
         checkDownloadAvailability(jobName);
     };
-
-    useEffect(() => {
-        if (downloadAvailable) {
-            setDownloadAvailable(false);
-        }
-    }, [downloadAvailable]);
 
     useEffect(() => {
         if (downloadErrorMessage) {
@@ -241,6 +237,8 @@ export default function Dashboard() {
             <>
                 <HeroSection />
 
+                <ExampleCards />
+
                 <ToolCards />
 
                 <ComputedJobsTable
@@ -252,8 +250,6 @@ export default function Dashboard() {
                     openMultiDeleteModal={openMultiDeleteModal}
                     switchPublicity={switchPublicity}
                 />
-
-                <ExampleCards />
             </>
         </>
     );

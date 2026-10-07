@@ -1,5 +1,4 @@
 import ExampleCard from "@/app/components/dashboard/ExampleCard";
-import Link from "next/link";
 
 import cyp2c9ExampleData from "@/public/exampleproteins/cyp2c9-50ola_model.json";
 import porinExampleData from "@/public/exampleproteins/porin.json";
@@ -39,24 +38,23 @@ const EXAMPLE_CONFIGS = [
 export default function ExampleCards() {
     return (
         <section
-            className="flex flex-col py-8 px-4 sm:px-8 lg:px-12"
+            className="flex flex-col py-8 px-4 sm:px-6 lg:px-8"
             id="examples"
             aria-labelledby="examples-heading">
-            <div className="max-w-6xl mx-auto w-full">
+            <div className="max-w-7xl mx-auto w-full">
                 <header className="text-center mb-8">
                     <h1
                         id="examples-heading"
                         className="text-3xl lg:text-4xl font-bold text-primary mb-4">
-                        Example Protein Structures
+                        Curated Case Studies
                     </h1>
                     <p className="text-base text-base-content/80 mx-auto leading-relaxed">
-                        Explore these pre-computed examples to see our platform in action. Each structure demonstrates different prediction
-                        capabilities and methodologies.
+                        Precomputed structures across diverse protein families, ready to explore.
                     </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-20">
-                    {EXAMPLE_CONFIGS.map((config, index) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {EXAMPLE_CONFIGS.map((config) => (
                         <div
                             key={config.jobName}
                             className="flex justify-center ">
@@ -70,15 +68,6 @@ export default function ExampleCards() {
                             />
                         </div>
                     ))}
-                </div>
-
-                <div className="mt-12 text-center">
-                    <p className="text-sm text-base-content/60 mb-4">Want to try with your own protein sequence?</p>
-                    <Link
-                        href="#get-started"
-                        className="btn btn-outline btn-primary">
-                        Start New Prediction
-                    </Link>
                 </div>
             </div>
         </section>

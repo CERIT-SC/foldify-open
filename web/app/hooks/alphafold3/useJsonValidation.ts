@@ -1,23 +1,12 @@
-import {useEffect, useState} from "react";
+import {useMemo} from "react";
 
 export const useJsonValidation = (jsonFile: File | null, jobName: string, email: string) => {
-    const [errorsJson, setErrorsJson]: any = useState({});
-    const [isFileValid, setIsFileValid] = useState<boolean>(false);
-
-    useEffect(() => {
-        validateJsonForm();
-    }, [jsonFile, jobName, email]);
-
-    const validateJsonForm = () => {
+    return useMemo(() => {
         let errorsJson: any = {};
 
-        const jsonInput = document.getElementById("json_file_input") as HTMLInputElement;
-        const jsonFileFromInput = jsonInput?.files?.[0];
-        console.log(jsonFileFromInput);
-
-        if (!jsonFileFromInput) {
+        if (!jsonFile) {
             errorsJson.jsonFile = "JSON file is required.";
-        } else if (!jsonFileFromInput.name.endsWith(".json")) {
+        } else if (!jsonFile.name.endsWith(".json")) {
             errorsJson.jsonFile = "Invalid file format. Please upload a JSON file.";
         }
 
@@ -33,9 +22,6 @@ export const useJsonValidation = (jsonFile: File | null, jobName: string, email:
             errorsJson.email = "Invalid email format.";
         }
 
-        setErrorsJson(errorsJson);
-        setIsFileValid(Object.keys(errorsJson).length === 0);
-    };
-
-    return {errorsJson, isFileValid};
+        return {errorsJson, isFileValid: Object.keys(errorsJson).length === 0};
+    }, [jsonFile, jobName, email]);
 };

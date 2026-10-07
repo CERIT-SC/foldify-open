@@ -1,15 +1,7 @@
-import {useEffect, useState} from "react";
+import {useMemo} from "react";
 
 export const useFormValidation = (jobName: string, modelSeeds: string, sequences: any[], email: string) => {
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [warnings, setWarnings] = useState<Record<string, string>>({});
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
-
-    useEffect(() => {
-        validateForm();
-    }, [jobName, modelSeeds, sequences, email]);
-
-    const validateForm = () => {
+    const { errors, warnings, isFormValid } = useMemo(() => {
         let errors: Record<string, string> = {};
 
         if (!jobName) {
@@ -67,10 +59,8 @@ export const useFormValidation = (jobName: string, modelSeeds: string, sequences
             }
         });
 
-        setErrors(errors);
-        setWarnings(warnings);
-        setIsFormValid(Object.keys(errors).length === 0);
-    };
+        return { errors, warnings, isFormValid: Object.keys(errors).length === 0 };
+    }, [jobName, modelSeeds, sequences, email]);
 
     return {errors, isFormValid, warnings};
 };

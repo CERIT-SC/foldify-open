@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import axios from "axios";
 import AlertSuccess from "../components/SuccessAlertWindow";
 import AlertError from "../components/ErrorAlertWindow";
@@ -41,8 +41,6 @@ export default function Colabfold() {
     const [submitErrorMessage, setSubmitErrorMessage] = useState("");
     const [submitSuccessMessage, setSubmitSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [errors, setErrors]: any = useState({});
-    const [isFormValid, setIsFormValid] = useState(false);
 
     const runJob = () => {
         setIsLoading(true);
@@ -101,11 +99,7 @@ export default function Colabfold() {
             });
     };
 
-    useEffect(() => {
-        validateForm();
-    }, [jobName, proteinSequence, email]);
-
-    const validateForm = () => {
+    const { errors, isFormValid } = useMemo(() => {
         let errors: any = {};
 
         if (!jobName) {
@@ -147,9 +141,8 @@ export default function Colabfold() {
             errors.email = "Email is invalid.";
         }
 
-        setErrors(errors);
-        setIsFormValid(Object.keys(errors).length === 0);
-    };
+        return { errors, isFormValid: Object.keys(errors).length === 0 };
+    }, [jobName, proteinSequence, email]);
 
     const handleSubmit = () => {
         if (isFormValid) {

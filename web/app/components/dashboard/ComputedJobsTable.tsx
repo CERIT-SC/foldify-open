@@ -149,7 +149,7 @@ export default function ComputedJobsTable({
                     </div>
                     <ul
                         tabIndex={0}
-                        className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg border">
+                        className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg border">
                         <li>
                             <Link
                                 href={`/result/${job[1]}`}
@@ -186,7 +186,7 @@ export default function ComputedJobsTable({
     const allFilteredSelected = filteredJobs.length > 0 && selectedJobs.length === filteredJobs.length;
 
     return (
-        <div className="container mx-auto px-4 py-8 ">
+        <div className="box-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ export default function ComputedJobsTable({
                 </div>
             </div>
 
-            <div className="card bg-gradient-to-r from-primary/10 to-secondary/10 shadow-xl mb-6 border border-primary/20">
+            <div className="card bg-linear-to-r from-primary/10 to-secondary/10 shadow-xl mb-6 border border-primary/20">
                 {/* Multi-Compare Section */}
                 <div className="card-body p-6">
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -303,7 +303,7 @@ export default function ComputedJobsTable({
                             </span>
                         </div>
                     )}
-                    <div className="space-y-6 max-h-[40rem] overflow-y-auto pb-10 rounded-3xl border shadow-xl">
+                    <div className="space-y-6 max-h-160 overflow-y-auto pb-10 rounded-3xl border shadow-xl">
                         {/* Table Section */}
                         <div className="card bg-white/20 rounded-3xl">
                             <div className="card-body p-0">

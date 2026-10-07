@@ -1,10 +1,10 @@
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import axios from "axios";
 
 export const useJobData = (jobName: string) => {
     const [loadingPlddt, setLoadingPlddt] = useState<boolean>(true);
 
-    const fetchData = async (endpoint: string, setter: (data: any) => void) => {
+    const fetchData = useCallback(async (endpoint: string, setter: (data: any) => void) => {
 
         try {
             const response = await axios.get(`/api/flask/result/${jobName}${endpoint}`);
@@ -21,7 +21,7 @@ export const useJobData = (jobName: string) => {
                 console.log(`An error occurred: ${error.message}`);
             }
         }
-    };
+    }, [jobName]);
 
     return {fetchData, loadingPlddt};
 };

@@ -1,16 +1,8 @@
 import {useState} from "react";
-import axios, {CancelTokenSource} from "axios";
+import axios from "axios";
 
 export const useJobDownload = () => {
     const [downloadErrorMessage, setDownloadErrorMessage] = useState<string>("");
-
-    let cancelDownloadToken: CancelTokenSource | null = null;
-    const cancelDownload = () => {
-        if (cancelDownloadToken) {
-            cancelDownloadToken.cancel("Download cancelled by user.");
-            cancelDownloadToken = null;
-        }
-    };
 
     const handleDownload = (jobName: string, username: string) => {
 
@@ -30,17 +22,12 @@ export const useJobDownload = () => {
         document.body.removeChild(form);
     };
 
-    const [downloadAvailable, setDownloadAvailable] = useState<boolean>(false);
     const checkDownloadAvailability = async (jobName: string) => {
-        cancelDownloadToken = axios.CancelToken.source();
         try {
             const response = await axios.get(`/api/flask/download/zip_available/${jobName}`);
-            setDownloadAvailable(response.data.download);
             handleDownload(jobName, response.data.username);
         } catch (error: any) {
-            if (axios.isCancel(error)) {
-                console.log("Request cancelled", error.message);
-            } else if (error.response) {
+            if (error.response) {
                 const errorMessage = error.response.data.error || JSON.stringify(error.response.data);
                 console.log(errorMessage);
                 setDownloadErrorMessage(errorMessage);
@@ -57,8 +44,5 @@ export const useJobDownload = () => {
         downloadErrorMessage,
         handleDownload,
         checkDownloadAvailability,
-        downloadAvailable,
-        cancelDownload,
-        setDownloadAvailable
     };
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AlertSuccess from "../components/SuccessAlertWindow";
 import AlertError from "../components/ErrorAlertWindow";
 import { generateSlug } from "random-word-slugs";
@@ -25,8 +25,6 @@ export default function MultiModel() {
     const [selectedTools, setSelectedTools] = useState<string[]>([]);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
-    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const handleToolSelectionChange = (tools: string[]) => {
         setSelectedTools(tools);
@@ -88,11 +86,7 @@ export default function MultiModel() {
         }
     }, [submitSuccessMessage, submitErrorMessage]);
 
-    useEffect(() => {
-        validateForm();
-    }, [jobName, sequence, selectedTools, email]);
-
-    const validateForm = () => {
+    const { errors, isFormValid } = useMemo(() => {
         let errors: Record<string, string> = {};
 
         if (!jobName) {
@@ -121,9 +115,8 @@ export default function MultiModel() {
             errors.selectedTools = "At least two tools must be selected.";
         }
 
-        setIsFormValid(Object.keys(errors).length === 0);
-        setErrors(errors);
-    };
+        return { errors, isFormValid: Object.keys(errors).length === 0 };
+    }, [jobName, sequence, selectedTools, email]);
 
     return (
         <>
@@ -147,7 +140,7 @@ export default function MultiModel() {
                     <p className="text-md text-base-content/70 max-w-3xl mx-auto leading-relaxed">
                         Compare multiple protein structure prediction tools. Select at least 2 tools to run parallel predictions and compare results.
                     </p>
-                    <span className="text-xs text-base-content/50">*previously named 'MultiFold' (as referenced in our JCIM paper)</span>
+                    <span className="text-xs text-base-content/50">*previously named &apos;MultiFold&apos; (as referenced in our JCIM paper)</span>
                 </div>
 
                 {/* Main Form */}
