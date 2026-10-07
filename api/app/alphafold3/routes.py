@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, request
-from app.wrappers import token_required
+from app.wrappers import token_required, submission_disabled
 import json
 
 from pydantic import ValidationError
@@ -16,6 +16,7 @@ alphafold3 = Blueprint('alphafold3', __name__)
 
     
 @alphafold3.route('/v1/submit', methods=["POST"])
+@submission_disabled
 @token_required
 def submit_af3_job(current_user):
     """ Submit an AlphaFold3 job using advanced configuration."""
@@ -60,6 +61,7 @@ def submit_af3_job(current_user):
         return jsonify({"error": str(e)}), 400 
 
 @alphafold3.route('/v1/submit/json', methods=["POST"])
+@submission_disabled
 @token_required
 def submit_af3_job_json(current_user):
     """Submit an AlphaFold3 job using a JSON configuration from client."""

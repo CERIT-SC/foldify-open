@@ -1,5 +1,5 @@
 from flask import jsonify, request, Blueprint
-from app.wrappers import token_required
+from app.wrappers import token_required, submission_disabled
 from kubernetes import client
 
 from app.shared.common import NAMESPACE
@@ -23,6 +23,7 @@ batchApi = connect_to_k8s()
 
 
 @colabfold.route("/submit", methods=["POST"])
+@submission_disabled
 @token_required
 def submit_job(current_user):
     """Submit a new ColabFold job to the Kubernetes cluster."""

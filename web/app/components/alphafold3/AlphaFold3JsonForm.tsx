@@ -6,7 +6,6 @@ import { CheckBoxGroup } from "./AF3CheckBoxGroup";
 import AlertSuccess from "@/app/components/SuccessAlertWindow";
 import AlertError from "@/app/components/ErrorAlertWindow";
 import { useEffect } from "react";
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { JobNameInput } from "../JobNameInput";
 import { generateSlug } from "random-word-slugs";
 import EmailInput from "@/app/components/EmailInput";
@@ -98,30 +97,6 @@ export const AlphaFold3JsonForm = () => {
                 onForceComputationChange={setForceComputation}
                 onMakeResultsPublicChange={setMakeResultsPublic}
             />
-
-            {/* Submit Section */}
-            <div className="mt-12 pt-8 border-t border-base-300">
-                <div className="text-center">
-                    <button
-                        className={`btn btn-lg rounded-2xl shadow-lg transition-all duration-200 ${
-                            isFileValid && !isLoading ? "btn-primary hover:shadow-xl transform hover:-translate-y-0.5" : "btn-disabled"
-                        }`}
-                        disabled={!isFileValid || isLoading}
-                        onClick={handleJsonSubmit}>
-                        {isLoading ?
-                            <>
-                                <span className="loading loading-spinner loading-sm"></span>
-                                Submitting Job...
-                            </>
-                        :   <>
-                                <ChevronDoubleRightIcon className="w-5 h-5 mr-2" />
-                                Submit Job
-                            </>
-                        }
-                    </button>
-                    <p className="text-sm text-base-content/60 mt-4">You will receive an email notification when your job completes</p>
-                </div>
-            </div>
 
             {/* Display success/error messages */}
             <AlertError

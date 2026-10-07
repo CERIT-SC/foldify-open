@@ -86,8 +86,8 @@ export default function HeroSection() {
                             {displayedTab === 0 ?
                                 <>
                                     <p className="text-sm text-base-content/70 mb-8">
-                                        Run <b>AlphaFold 2, AlphaFold 3, ColabFold, ESMFold, and OmegaFold</b>. Submit anytime, compare results side
-                                        by side, pick your best model.
+                                        Explore predictions from <b>AlphaFold 2, AlphaFold 3, ColabFold, ESMFold, and OmegaFold</b>. Browse example
+                                        results, compare them side by side, pick your best model.
                                     </p>
                                     <div className="flex flex-wrap justify-start gap-6 text-sm text-base-content/70 mb-4">
                                         <div className="flex items-center">

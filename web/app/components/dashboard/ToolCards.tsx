@@ -9,13 +9,7 @@ export default function ToolCards({}) {
             {/* Header Section */}
             <div className="text-center mb-8">
                 <div className="inline-block">
-                    <h1 className="text-3xl lg:text-4xl font-bold text-primary relative my-4">Select Prediction Tool & Start Your Computation</h1>
-                </div>
-                <div className="max-w-3xl mx-auto">
-                    <p className="text-base text-base-content/80 mx-auto leading-relaxed">
-                        Select a tool to predict protein or molecule structures. New to this? Start with <strong>MultiModel Submission</strong> and
-                        compare multiple prediction tools.
-                    </p>
+                    <h1 className="text-3xl lg:text-4xl font-bold text-primary relative my-4">Prediction Tools</h1>
                 </div>
             </div>
 

@@ -1,5 +1,5 @@
 from flask import jsonify, request, Blueprint
-from app.wrappers import token_required
+from app.wrappers import token_required, submission_disabled
 from kubernetes import client
 
 from app.alphafold.utilities import deploy_alphafold2_job
@@ -13,6 +13,7 @@ alphafold = Blueprint('alphafold', __name__)
 
 
 @alphafold.route("/submit", methods=["POST"])
+@submission_disabled
 @token_required
 def submit_job(current_user):
     """Submit a new AlphaFold job to the Kubernetes cluster."""

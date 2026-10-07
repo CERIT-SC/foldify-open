@@ -7,6 +7,27 @@ import os
 from config import Config
 
 
+SUBMISSION_DISABLED_MESSAGE = (
+    "**Job submission is disabled on this instance** due to high demand on computational resources. "
+    "You can still browse the example predictions and your existing results.  \n"
+    "To run predictions, deploy Foldify on your own hardware from "
+    "[GitHub](https://github.com/CERIT-SC/foldify-open), or use the full version at "
+    "[foldify.cloud.e-infra.cz](https://foldify.cloud.e-infra.cz) after "
+    "[creating a MetaCentrum account](https://metavo.metacentrum.cz/cs/application/index.html)."
+)
+
+
+def submission_disabled(f):
+    """Decorator to reject every job submission request."""
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        logging.info(f'Rejected job submission request to {request.path}: submission is disabled.')
+        return jsonify({'error': SUBMISSION_DISABLED_MESSAGE}), 503
+
+    return decorated
+
+
 def validate_session_token(token):
     """Validate the session JWT token and extract session ID."""
     

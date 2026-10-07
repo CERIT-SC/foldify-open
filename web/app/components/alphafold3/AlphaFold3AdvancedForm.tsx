@@ -19,7 +19,6 @@ import { useBondInput } from "@/app/hooks/alphafold3/useBondInput";
 import { useUserCCDValidation } from "@/app/hooks/alphafold3/useUserCCDValidation";
 import WarningAlert from "@/app/components/WarningAlert";
 import MMSeqs2Group from "@/app/components/alphafold3/MMSeqs2Group";
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 
 import { createProtein, createRNA, createDNA, createLigand, createJob } from "@/app/utils/alphafold3/sequenceFactories";
 import CCDFileUpload from "./CCDFileUpload";
@@ -268,30 +267,6 @@ export default function AlphaFold3AdvancedForm() {
                 onForceComputationChange={setForceComputation}
                 onMakeResultsPublicChange={setMakeResultsPublic}
             />
-
-            {/* Submit Section */}
-            <div className="mt-12 pt-8 border-t border-base-300">
-                <div className="text-center">
-                    <button
-                        className={`btn btn-lg rounded-2xl shadow-lg transition-all duration-200 ${
-                            isFormValid && !isLoading && isFileValid ? "btn-primary hover:shadow-xl transform hover:-translate-y-0.5" : "btn-disabled"
-                        }`}
-                        disabled={!isFormValid || isLoading || !isFileValid}
-                        onClick={handleSubmit}>
-                        {isLoading ?
-                            <>
-                                <span className="loading loading-spinner loading-sm"></span>
-                                Submitting Job...
-                            </>
-                        :   <>
-                                <ChevronDoubleRightIcon className="w-5 h-5 mr-2" />
-                                Submit Job
-                            </>
-                        }
-                    </button>
-                    <p className="text-sm text-base-content/60 mt-4">You will receive an email notification when your job completes</p>
-                </div>
-            </div>
 
             <span className="text-xs text-base-content/60">* Required fields.</span>
 

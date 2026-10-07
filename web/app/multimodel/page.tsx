@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import AlertSuccess from "../components/SuccessAlertWindow";
 import AlertError from "../components/ErrorAlertWindow";
 import { generateSlug } from "random-word-slugs";
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 
 // Form Input Components
 import { JobNameInput } from "../components/JobNameInput";
@@ -223,31 +222,6 @@ export default function MultiModel() {
                                 onMakeResultsPublicChange={setMakeResultsPublic}
                             />
 
-                            {/* Submit Section */}
-                            <div className="mt-12 pt-8 border-t border-base-300">
-                                <div className="text-center">
-                                    <button
-                                        className={`btn btn-lg rounded-2xl shadow-lg transition-all duration-200 ${
-                                            isFormValid && !isLoading ?
-                                                "btn-primary hover:shadow-xl transform hover:-translate-y-0.5"
-                                            :   "btn-disabled"
-                                        }`}
-                                        disabled={!isFormValid || isLoading}
-                                        onClick={handleSubmit}>
-                                        {isLoading ?
-                                            <>
-                                                <span className="loading loading-spinner loading-sm"></span>
-                                                Submitting Jobs...
-                                            </>
-                                        :   <>
-                                                <ChevronDoubleRightIcon className="w-5 h-5 mr-2" />
-                                                Submit Jobs
-                                            </>
-                                        }
-                                    </button>
-                                    <p className="text-sm text-base-content/60 mt-4">You will receive an email notification when all jobs complete</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

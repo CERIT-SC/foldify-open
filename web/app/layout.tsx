@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import SubmissionDisabledAlert from "./components/SubmissionDisabledAlert";
 import React from "react";
 
 const poppins = Poppins({
@@ -25,6 +26,7 @@ export default function RootLayout({
             lang="en"
             className="scroll-smooth">
             <body className={`${poppins.className} min-h-screen`}>
+                <SubmissionDisabledAlert />
                 <header>
                     <Header />
                 </header>
